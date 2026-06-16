@@ -1,0 +1,18 @@
+{
+  "nama": "Makanan Segera Berhad",
+  "ticker": "ORKES-F",
+  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia. Fail ini SENGAJA tidak lengkap untuk latihan refusal.",
+  "papan": "Utama",
+  "sektor": "Pemprosesan makanan",
+  "harga_semasa": 1.05,
+  "bil_saham_juta": 750,
+  "kewangan": {
+    "FY2025": {
+      "hasil_juta": 410.0,
+      "untung_bersih_juta": 28.7,
+      "aliran_tunai_operasi_juta": 31.0,
+      "jumlah_hutang_juta": 120.0,
+      "ekuiti_juta": 310.0
+    }
+  }
+}

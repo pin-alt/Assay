@@ -1,0 +1,11 @@
+# Band platform credentials — one entry per external agent you register at app.band.ai/agents
+# Copy to agent_config.yaml and fill in the UUID + API key from each agent's settings page.
+skaut:
+  agent_id: ""
+  api_key: ""
+konduktor:
+  agent_id: ""
+  api_key: ""
+pengulas:
+  agent_id: ""
+  api_key: ""

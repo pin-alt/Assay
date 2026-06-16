@@ -1,0 +1,155 @@
+# Band Armada — Multi-Agent Investment Screening Desk
+
+**Nombor dari kod. AI mengarah, kod mengira, manusia memutuskan.**
+
+A Band-native multi-agent system where three AI agents collaborate through
+@mention chat rooms to screen stocks — but every financial number comes from
+a deterministic Python engine, and a separate agent cross-audits every report.
+
+**Hackathon:** Band of Agents (lablab.ai), June 12–19, 2026  
+**Status:** Engine + tests ✅ | Band agents ready for live test (Task 11)
+
+---
+
+## How it works
+
+```
+User ──@Konduktor──►  RONDAAN ROOM (Band chat)
+  "run rondaan"
+                       ┌──────────┐  @Skaut  ┌──────────┐
+                       │ Konduktor │─────────►│  Skaut   │
+                       │(orchestr.)│◄─cand.──│(discover)│
+                       │           │          └──────────┘
+                       │    │ calls run_screening TOOL
+                       │    ▼      │
+                       │ [ENGINE]  │ ◄── deterministic Python
+                       │    │      │
+                       │  writes   │  @Pengulas  ┌──────────┐
+                       │  reports  │────────────►│ Pengulas  │
+                       └───────────┘◄──AUDIT:OK──│ (auditor) │
+                                                  └──────────┘
+```
+
+**The engine is the single source of truth.** No agent computes a ratio.
+The Konduktor calls the engine, writes reports, then Pengulas re-runs the
+engine to cross-audit every number. Numbers that can't be traced back = audit
+failure. This is the "grounded agent" posture Band's own marketing sells.
+
+---
+
+## Quick start
+
+### 1. Engine only (no Band platform, no LLM)
+
+```bash
+cd D:\02-Projects\2026-06-16-band-armada
+uv sync --extra dev
+uv run python -m armada.runner --demo
+```
+
+Output: all 6 synthetic companies screened in <1 second. LULUS: 2, GAGAL: 2,
+TIDAK LENGKAP: 2.
+
+### 2. Run tests
+
+```bash
+uv run pytest -v                          # 13 tests, all pass
+```
+
+### 3. Launch on Band platform (needs registered agents)
+
+```bash
+# 1. Register 3 agents at app.band.ai/agents
+# 2. Copy credentials
+cp agent_config.yaml.example agent_config.yaml
+# Fill in each agent's agent_id + api_key
+
+# 3. Create .env
+cp .env.example .env
+# Fill in GLM_API_KEY (z.ai)
+
+# 4. Launch all three agents (separate terminals or background)
+uv run python -m armada.runner --skaut      # terminal 1
+uv run python -m armada.runner --konduktor   # terminal 2
+uv run python -m armada.runner --pengulas    # terminal 3
+
+# Or all at once:
+uv run python -m armada.runner --all
+```
+
+Then in the Band app, @mention Konduktor with "run rondaan" and watch the
+orchestra play.
+
+---
+
+## Project layout
+
+```
+2026-06-16-band-armada/
+├── armada/
+│   ├── engine.py         # Deterministic screening (verbatim AVL port)
+│   ├── tools.py          # LangChain @tools wrapping the engine
+│   ├── prompts.py        # Agent system prompts (ported from AVL CLAUDE.md)
+│   ├── runner.py         # CLI entry point
+│   └── agents/
+│       ├── _common.py    # Shared LLM + LangGraphAdapter factory
+│       ├── skaut.py      # Discovery agent
+│       ├── konduktor.py  # Orchestrator + report writer
+│       └── pengulas.py   # Cross-auditor
+├── data/                 # 6 synthetic companies (ORKES-A..F.json)
+├── output/               # Reports land here
+└── tests/
+    ├── test_engine.py    # 6 tests: all statuses match oracle
+    └── test_tools.py     # 7 tests: tool shapes + read/write cycle
+```
+
+---
+
+## The doctrine (why this wins)
+
+Most hackathon entries will have agents that happily invent numbers. This
+submission has agents that **architecturally refuse to compute:**
+
+| Guardrail | How |
+|---|---|
+| Numbers from code | All ratios come from `armada/engine.py` — Python stdlib |
+| Agents can't compute | Tools are read-only wrappers; no agent has ratio logic |
+| Cross-audit | Separate Pengulas agent re-runs the engine to verify reports |
+| Refusal-first | Incomplete data = TIDAK LENGKAP, no ratios, no report |
+| Full audit trail | Band platform captures every message + tool call |
+| Zero hallucination surface | The LLM directs, explains, and audits — never calculates |
+
+---
+
+## The numbers
+
+```
+ORKES-A  LULUS          All 5 criteria pass
+ORKES-B  GAGAL          K1_gearing: 1.52 (limit < 1.0)
+ORKES-C  GAGAL          K2_margin: 1.5% (limit > 5%), K3_roe: 3.6% (limit > 8%)
+ORKES-D  TIDAK LENGKAP  Missing: sektor, FY2025.operating_cashflow
+ORKES-E  LULUS          All 5 criteria pass
+ORKES-F  TIDAK LENGKAP  Missing: financials (requires ≥2 years)
+```
+
+---
+
+## Model
+
+Primary: **GLM-5.2** via z.ai OpenAI-compatible endpoint (user's existing brain,
+zero new cost). Fallback: swap to Claude by changing `_common.py` model factory.
+
+---
+
+## From the AVL workshop
+
+This engine is a verbatim port of `tools/jalankan_saringan.py` from the
+Bengkel Saham AI Advanced Class. It preserves the exact screening criteria,
+thresholds, and refusal-first behavior. The synthetic datasets (`data/ORKES-*.json`)
+are unchanged — same 6 companies, same expected outcomes.
+
+---
+
+## License
+
+MIT — the doctrine is the differentiator, not the code.

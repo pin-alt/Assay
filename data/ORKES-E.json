@@ -1,0 +1,25 @@
+{
+  "nama": "Penjagaan Sejahtera Berhad",
+  "ticker": "ORKES-E",
+  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
+  "papan": "Utama",
+  "sektor": "Penjagaan kesihatan",
+  "harga_semasa": 2.40,
+  "bil_saham_juta": 400,
+  "kewangan": {
+    "FY2024": {
+      "hasil_juta": 180.0,
+      "untung_bersih_juta": 21.6,
+      "aliran_tunai_operasi_juta": 25.0,
+      "jumlah_hutang_juta": 30.0,
+      "ekuiti_juta": 240.0
+    },
+    "FY2025": {
+      "hasil_juta": 198.0,
+      "untung_bersih_juta": 25.7,
+      "aliran_tunai_operasi_juta": 28.4,
+      "jumlah_hutang_juta": 28.0,
+      "ekuiti_juta": 262.0
+    }
+  }
+}

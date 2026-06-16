@@ -1,0 +1,25 @@
+{
+  "nama": "Logistik Pintar Berhad",
+  "ticker": "ORKES-A",
+  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
+  "papan": "ACE",
+  "sektor": "Perisian pengurusan logistik",
+  "harga_semasa": 1.20,
+  "bil_saham_juta": 500,
+  "kewangan": {
+    "FY2024": {
+      "hasil_juta": 210.0,
+      "untung_bersih_juta": 18.9,
+      "aliran_tunai_operasi_juta": 17.5,
+      "jumlah_hutang_juta": 40.0,
+      "ekuiti_juta": 150.0
+    },
+    "FY2025": {
+      "hasil_juta": 248.0,
+      "untung_bersih_juta": 24.8,
+      "aliran_tunai_operasi_juta": 22.0,
+      "jumlah_hutang_juta": 45.0,
+      "ekuiti_juta": 170.0
+    }
+  }
+}

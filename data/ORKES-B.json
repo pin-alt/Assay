@@ -1,0 +1,25 @@
+{
+  "nama": "Hartanah Mewah Berhad",
+  "ticker": "ORKES-B",
+  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
+  "papan": "Utama",
+  "sektor": "Pembangunan hartanah",
+  "harga_semasa": 0.80,
+  "bil_saham_juta": 1200,
+  "kewangan": {
+    "FY2024": {
+      "hasil_juta": 320.0,
+      "untung_bersih_juta": 22.0,
+      "aliran_tunai_operasi_juta": 15.0,
+      "jumlah_hutang_juta": 410.0,
+      "ekuiti_juta": 280.0
+    },
+    "FY2025": {
+      "hasil_juta": 355.0,
+      "untung_bersih_juta": 26.5,
+      "aliran_tunai_operasi_juta": 18.2,
+      "jumlah_hutang_juta": 455.0,
+      "ekuiti_juta": 300.0
+    }
+  }
+}

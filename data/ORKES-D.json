@@ -1,0 +1,23 @@
+{
+  "nama": "Tenaga Hijau Berhad",
+  "ticker": "ORKES-D",
+  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia. Fail ini SENGAJA tidak lengkap untuk latihan refusal.",
+  "papan": "ACE",
+  "harga_semasa": 0.55,
+  "bil_saham_juta": 650,
+  "kewangan": {
+    "FY2024": {
+      "hasil_juta": 88.0,
+      "untung_bersih_juta": 9.2,
+      "aliran_tunai_operasi_juta": 8.1,
+      "jumlah_hutang_juta": 35.0,
+      "ekuiti_juta": 95.0
+    },
+    "FY2025": {
+      "hasil_juta": 102.0,
+      "untung_bersih_juta": 11.5,
+      "jumlah_hutang_juta": 38.0,
+      "ekuiti_juta": 108.0
+    }
+  }
+}
