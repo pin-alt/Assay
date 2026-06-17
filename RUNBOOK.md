@@ -27,8 +27,10 @@ If this works, the engine + auditor are healthy and the only unknowns left are B
 
 ## Phase 1 — Register the 3 agents on Band (10 min)
 
-[BROWSER] Go to https://app.band.ai/agents. For each of the three, click
-**New Agent → External Agent** and use these names + descriptions:
+[BROWSER] Go to https://app.band.ai/agents. For each of the three, click the blue
+**Connect Remote Agent** button (NOT "Create Internal Agent" — internal = Band-hosted, which
+won't run our engine/tools; our agents are remote Python processes that connect in). Use
+these names + descriptions:
 
 - **Skaut** — "Discovery agent. Surveys the company dataset and returns a candidate list with
   a completeness pre-check. Never computes a ratio."
