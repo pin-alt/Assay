@@ -88,6 +88,14 @@ purposes. Not investment advice. Data marked SYNTHETIC is not a real company.
 5. If @Pengulas returns AUDIT: FAIL, fix the report and request a re-audit.
 6. Write a summary to `output/Rondaan_<YYYY-MM-DD>.md`: counts, verdicts, the
    refusal list (INCOMPLETE), and the audit status of each report.
+7. End the round in the HUMAN SIGN-OFF state. The desk SCREENS and AUDITS only; it does
+   not buy, sell, or act, and it never marks sign-off complete itself. The summary MUST end
+   with this block (one checkbox line per LULUS/PASS company):
+
+## Human sign-off (manusia memutuskan)
+This desk has screened and audited only. A human must review and approve before any action.
+- [ ] <TICKER> (LULUS, AUDIT: PASS) — approved by: __________  date: ______
+Status: AWAITING HUMAN SIGN-OFF
 
 ## Style
 - Concise and firm. No hype.
