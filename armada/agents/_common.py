@@ -17,6 +17,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 from band import Agent
 from band.adapters.langgraph import LangGraphAdapter
+from band.core.types import AdapterFeatures, Emit
 
 # Load .env once at module level
 _load_env = Path(__file__).resolve().parent.parent.parent / ".env"
@@ -117,6 +118,10 @@ def build_adapter(
         checkpointer=InMemorySaver(),
         custom_section=custom_section,
         additional_tools=additional_tools or [],
+        # Without EXECUTION emit, tool_call/tool_result events are NOT sent to Band's
+        # audit trail (gated in adapters/langgraph.py). That trail is the hackathon
+        # win-gate; default features leave emit empty, so request it explicitly.
+        features=AdapterFeatures(emit={Emit.EXECUTION}),
     )
 
 
