@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Band Armada — Deck</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a32; --ink:#eaf0ff; --muted:#9fb0d8;
+    --accent:#3ddc97; --fail:#ff6b6b; --pass:#3ddc97; --line:#22304f; --chip:#1b2748;
+  }
+  *{box-sizing:border-box} html,body{margin:0;background:#05070f;color:var(--ink);
+    font-family:"Segoe UI",Inter,system-ui,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .slide{width:1280px;height:720px;margin:24px auto;background:
+    radial-gradient(1200px 600px at 80% -10%,#16224a 0%,var(--bg) 55%);
+    border:1px solid var(--line);border-radius:18px;padding:64px 72px;position:relative;overflow:hidden}
+  h1{font-size:60px;line-height:1.05;margin:0 0 18px}
+  h2{font-size:40px;margin:0 0 26px}
+  p,li{font-size:25px;line-height:1.45;color:var(--ink)}
+  .muted{color:var(--muted)}
+  .kicker{letter-spacing:.18em;text-transform:uppercase;font-size:16px;color:var(--accent);margin:0 0 22px}
+  .big{font-size:34px;line-height:1.35}
+  .accent{color:var(--accent)} .fail{color:var(--fail)} .pass{color:var(--pass)}
+  ul{margin:8px 0 0;padding-left:0;list-style:none}
+  li{margin:14px 0;padding-left:34px;position:relative}
+  li::before{content:"";position:absolute;left:0;top:13px;width:14px;height:14px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 0 4px rgba(61,220,151,.15)}
+  .chip{display:inline-block;background:var(--chip);border:1px solid var(--line);border-radius:999px;
+    padding:6px 16px;font-size:18px;color:var(--muted);margin:6px 8px 0 0}
+  .foot{position:absolute;bottom:30px;left:72px;right:72px;display:flex;justify-content:space-between;
+    font-size:16px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 26px}
+  .card h3{margin:0 0 8px;font-size:24px;color:var(--accent)}
+  .card p{font-size:21px;margin:0;color:var(--muted)}
+  .flow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;font-size:21px}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .arrow{color:var(--accent);font-size:26px}
+  .mono{font-family:"Cascadia Code",Consolas,monospace}
+  .verdict{font-family:"Cascadia Code",Consolas,monospace;font-size:24px;background:#0a1126;
+    border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-top:14px;white-space:pre-wrap}
+  @media print{ body{background:#fff} .slide{margin:0;page-break-after:always;border-radius:0;border:none;
+    width:100%;height:100vh} @page{size:1280px 720px;margin:0} }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <p class="kicker">Band of Agents Hackathon · Track 3 · Regulated &amp; High-Stakes Workflows</p>
+  <h1>Band Armada</h1>
+  <p class="big">Agents that <span class="accent">refuse to invent numbers</span>.</p>
+  <p class="muted big">Numbers from code. AI directs, code computes, humans decide.</p>
+  <div style="margin-top:26px">
+    <span class="chip">Band-native</span><span class="chip">3 agents</span>
+    <span class="chip">deterministic engine</span><span class="chip">correctness audit</span>
+  </div>
+  <div class="foot"><span>Band Armada</span><span>Not investment advice · synthetic demo data</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">The problem</p>
+  <h2>Most agents happily invent a number</h2>
+  <p class="big">The smarter ones add an auditor that checks whether the AI was
+  <span class="muted">honest</span> about its number.</p>
+  <p class="big" style="margin-top:22px">That still passes a verdict that is
+  <span class="fail">wrong</span> as long as it looks honest. In a high-stakes financial
+  workflow that is a liability, not a quirk.</p>
+  <div class="foot"><span>Band Armada</span><span>02</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">The wedge</p>
+  <h2>We compute the decision in <span class="accent">code</span></h2>
+  <p class="big">So our auditor re-runs the math and catches a verdict that is wrong
+  <span class="accent">even when the AI is perfectly honest</span>.</p>
+  <div class="grid">
+    <div class="card"><h3>Everyone else</h3><p>Honesty / citation / tamper-evident hash. Proves nobody altered the report.</p></div>
+    <div class="card"><h3>Band Armada</h3><p>Correctness audit. Re-computes the number and proves the report is right.</p></div>
+  </div>
+  <div class="foot"><span>A hash proves nobody altered it. It does not prove it is right.</span><span>03</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">Architecture</p>
+  <h2>Three agents collaborate <span class="accent">through Band</span></h2>
+  <div class="flow">
+    <span class="node">Skaut<br><span class="muted" style="font-size:16px">discovery</span></span>
+    <span class="arrow">→</span>
+    <span class="node">Konduktor<br><span class="muted" style="font-size:16px">orchestrate + write</span></span>
+    <span class="arrow">→</span>
+    <span class="node mono">engine<br><span class="muted" style="font-size:16px">ratios + verdict</span></span>
+    <span class="arrow">→</span>
+    <span class="node">Pengulas<br><span class="muted" style="font-size:16px">re-run + audit</span></span>
+  </div>
+  <ul style="margin-top:26px">
+    <li>No agent computes a ratio. The engine is the only source of numbers.</li>
+    <li>Every @mention, tool_call and tool_result is in Band's audit trail.</li>
+    <li>Incomplete data is refused: no number, no report.</li>
+  </ul>
+  <div class="foot"><span>Band Armada</span><span>04</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">The proof — live on Band</p>
+  <h2>Clean run, then the tamper catch</h2>
+  <p class="big">4 reports, audited by Pengulas re-running the engine:</p>
+  <div class="verdict"><span class="pass">AUDIT: PASS</span>  ORKES-A · ORKES-B · ORKES-C · ORKES-E   (Checks 7 | Discrepancies 0)</div>
+  <p class="big" style="margin-top:22px">Doctor one figure in a finished report:</p>
+  <div class="verdict"><span class="fail">AUDIT: FAIL</span>  Ticker: ORKES-A · Discrepancies: 1
+Details: gearing: report claims 0.01, engine computes 0.26</div>
+  <div class="foot"><span>Deterministic. No model in the verdict.</span><span>05</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">High-stakes posture</p>
+  <h2>Refusal-first &amp; human sign-off</h2>
+  <ul>
+    <li><span class="accent">Refused 2 of 6</span> companies (TIDAK LENGKAP) on incomplete data. Most desks would score them anyway.</li>
+    <li>The desk screens and audits only. It does not buy, sell, or act.</li>
+    <li>Every round ends <span class="mono">AWAITING HUMAN SIGN-OFF</span> — manusia memutuskan.</li>
+    <li>Brain is swappable by one env var. The decision does not live in the model.</li>
+  </ul>
+  <div class="foot"><span>Band Armada</span><span>06</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker">Track 3 — review, traceability, careful decisions as the product</p>
+  <h1 style="font-size:48px">Agents that prove<br>their numbers are right.</h1>
+  <div style="margin-top:20px">
+    <span class="chip">Band · LangGraph</span><span class="chip">deterministic engine</span>
+    <span class="chip">24 tests green</span><span class="chip">model-portable</span>
+  </div>
+  <p class="muted big" style="margin-top:26px">Built zero-extra-cost on synthetic demo data. Not investment advice.</p>
+  <div class="foot"><span>Band Armada</span><span>07</span></div>
+</section>
+
+</body>
+</html>
