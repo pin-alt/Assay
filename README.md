@@ -7,7 +7,7 @@ A Band-native multi-agent system where three AI agents collaborate through
 a deterministic Python engine, and a separate agent cross-audits every report.
 
 **Hackathon:** Band of Agents (lablab.ai), June 12–19, 2026  
-**Status:** Engine + tests ✅ | Band agents ready for live test (Task 11)
+**Status:** Engine + 14/14 tests ✅ | Band agents ready for live test
 
 ---
 
@@ -53,7 +53,7 @@ INCOMPLETE: 2.
 ### 2. Run tests
 
 ```bash
-uv run pytest -v                          # 13 tests, all pass
+uv run pytest -v                          # 14 tests, all pass
 ```
 
 ### 3. Launch on Band platform (needs registered agents)
@@ -100,7 +100,7 @@ orchestra play.
 ├── output/               # Reports land here
 └── tests/
     ├── test_engine.py    # 6 tests: all statuses match oracle
-    └── test_tools.py     # 7 tests: tool shapes + read/write cycle
+    └── test_tools.py     # 8 tests: tool shapes + read/write cycle
 ```
 
 ---
@@ -136,8 +136,10 @@ ORKES-F  INCOMPLETE  Missing: financials (requires at least 2 years of financial
 
 ## Model
 
-Primary: **GLM-5.2** via z.ai OpenAI-compatible endpoint (user's existing brain,
-zero new cost). Fallback: swap to Claude by changing `_common.py` model factory.
+Primary: **GLM-5.2** via z.ai OpenAI-compatible endpoint (zero new cost). The brain is
+swappable by one env var, `MODEL_PROVIDER`: `glm` (default) | `aimlapi` (GPT-4o) |
+`featherless` (Qwen3) | `claude`. No code edit. The OpenAI-compatible providers reuse the
+existing `langchain-openai`; the `claude` path needs `uv add langchain-anthropic`.
 
 ---
 
