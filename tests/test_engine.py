@@ -7,12 +7,12 @@ from armada.engine import screen_all, screen_one, list_companies
 DATA = Path(__file__).resolve().parent.parent / "data"
 
 EXPECTED_STATUS = {
-    "ORKES-A": "LULUS",
-    "ORKES-B": "GAGAL",
-    "ORKES-C": "GAGAL",
-    "ORKES-D": "TIDAK LENGKAP",
-    "ORKES-E": "LULUS",
-    "ORKES-F": "TIDAK LENGKAP",
+    "ORKES-A": "PASS",
+    "ORKES-B": "FAIL",
+    "ORKES-C": "FAIL",
+    "ORKES-D": "INCOMPLETE",
+    "ORKES-E": "PASS",
+    "ORKES-F": "INCOMPLETE",
 }
 
 
@@ -31,25 +31,25 @@ def test_screen_all_statuses_match_oracle():
 
 def test_orkes_b_fails_gearing_only():
     r = screen_one(json.loads((DATA / "ORKES-B.json").read_text(encoding="utf-8")))
-    crit = r["kriteria"]
-    assert not crit["K1_gearing"]["lulus"]
-    assert all(crit[k]["lulus"] for k in crit if k != "K1_gearing")
+    crit = r["criteria"]
+    assert not crit["K1_gearing"]["passed"]
+    assert all(crit[k]["passed"] for k in crit if k != "K1_gearing")
 
 
 def test_orkes_d_missing_fields_identified():
     r = screen_one(json.loads((DATA / "ORKES-D.json").read_text(encoding="utf-8")))
-    assert "sektor" in r["medan_hilang"]
-    assert "FY2025.aliran_tunai_operasi_juta" in r["medan_hilang"]
+    assert "sector" in r["missing_fields"]
+    assert "FY2025.operating_cashflow_mil" in r["missing_fields"]
 
 
 def test_incomplete_company_has_no_ratios():
     """Refusal-first: incomplete data gets NO computed ratios, only the missing-field list."""
     r = screen_one(json.loads((DATA / "ORKES-D.json").read_text(encoding="utf-8")))
-    assert r["nisbah"] == {}
-    assert r["kriteria"] == {}
+    assert r["ratios"] == {}
+    assert r["criteria"] == {}
 
 
 def test_list_companies_returns_tickers():
     companies = list_companies(DATA)
-    assert {"ticker", "nama", "papan", "sektor"} <= set(companies[0].keys())
+    assert {"ticker", "name", "board", "sector"} <= set(companies[0].keys())
     assert len(companies) == 6

@@ -1,25 +1,25 @@
 {
-  "nama": "Logistik Pintar Berhad",
+  "name": "Smart Logistics Berhad",
   "ticker": "ORKES-A",
-  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
-  "papan": "ACE",
-  "sektor": "Perisian pengurusan logistik",
-  "harga_semasa": 1.20,
-  "bil_saham_juta": 500,
-  "kewangan": {
+  "note": "SYNTHETIC DATA. Created for class training only. Not a real company on Bursa Malaysia.",
+  "board": "ACE",
+  "sector": "Logistics management software",
+  "current_price": 1.20,
+  "shares_mil": 500,
+  "financials": {
     "FY2024": {
-      "hasil_juta": 210.0,
-      "untung_bersih_juta": 18.9,
-      "aliran_tunai_operasi_juta": 17.5,
-      "jumlah_hutang_juta": 40.0,
-      "ekuiti_juta": 150.0
+      "revenue_mil": 210.0,
+      "net_profit_mil": 18.9,
+      "operating_cashflow_mil": 17.5,
+      "total_debt_mil": 40.0,
+      "equity_mil": 150.0
     },
     "FY2025": {
-      "hasil_juta": 248.0,
-      "untung_bersih_juta": 24.8,
-      "aliran_tunai_operasi_juta": 22.0,
-      "jumlah_hutang_juta": 45.0,
-      "ekuiti_juta": 170.0
+      "revenue_mil": 248.0,
+      "net_profit_mil": 24.8,
+      "operating_cashflow_mil": 22.0,
+      "total_debt_mil": 45.0,
+      "equity_mil": 170.0
     }
   }
 }

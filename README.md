@@ -47,8 +47,8 @@ uv sync --extra dev
 uv run python -m armada.runner --demo
 ```
 
-Output: all 6 synthetic companies screened in <1 second. LULUS: 2, GAGAL: 2,
-TIDAK LENGKAP: 2.
+Output: all 6 synthetic companies screened in <1 second. PASS: 2, FAIL: 2,
+INCOMPLETE: 2.
 
 ### 2. Run tests
 
@@ -115,7 +115,7 @@ submission has agents that **architecturally refuse to compute:**
 | Numbers from code | All ratios come from `armada/engine.py` — Python stdlib |
 | Agents can't compute | Tools are read-only wrappers; no agent has ratio logic |
 | Cross-audit | Separate Pengulas agent re-runs the engine to verify reports |
-| Refusal-first | Incomplete data = TIDAK LENGKAP, no ratios, no report |
+| Refusal-first | Incomplete data = INCOMPLETE, no ratios, no report |
 | Full audit trail | Band platform captures every message + tool call |
 | Zero hallucination surface | The LLM directs, explains, and audits — never calculates |
 
@@ -124,12 +124,12 @@ submission has agents that **architecturally refuse to compute:**
 ## The numbers
 
 ```
-ORKES-A  LULUS          All 5 criteria pass
-ORKES-B  GAGAL          K1_gearing: 1.52 (limit < 1.0)
-ORKES-C  GAGAL          K2_margin: 1.5% (limit > 5%), K3_roe: 3.6% (limit > 8%)
-ORKES-D  TIDAK LENGKAP  Missing: sektor, FY2025.operating_cashflow
-ORKES-E  LULUS          All 5 criteria pass
-ORKES-F  TIDAK LENGKAP  Missing: financials (requires ≥2 years)
+ORKES-A  PASS        All 5 criteria pass
+ORKES-B  FAIL        K1_gearing: 1.52 (limit < 1.0)
+ORKES-C  FAIL        K2_net_margin_pct: 1.5 (limit > 5.0); K3_roe_pct: 3.6 (limit > 8.0)
+ORKES-D  INCOMPLETE  Missing: sector, FY2025.operating_cashflow_mil
+ORKES-E  PASS        All 5 criteria pass
+ORKES-F  INCOMPLETE  Missing: financials (requires at least 2 years of financials)
 ```
 
 ---

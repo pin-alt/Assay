@@ -18,7 +18,7 @@ def test_run_screening_returns_json_string():
     raw = run_screening.invoke({"data_dir": str(DATA)})
     parsed = json.loads(raw)
     assert "ORKES-A" in parsed
-    assert parsed["ORKES-A"]["status"] == "LULUS"
+    assert parsed["ORKES-A"]["status"] == "PASS"
 
 
 def test_discover_companies_returns_list():
@@ -31,14 +31,14 @@ def test_discover_companies_returns_list():
 def test_screen_one_company_known_pass():
     raw = screen_one_company.invoke({"data_dir": str(DATA), "ticker": "ORKES-A"})
     parsed = json.loads(raw)
-    assert parsed["status"] == "LULUS"
-    assert parsed["kriteria"]["K1_gearing"]["lulus"] is True
+    assert parsed["status"] == "PASS"
+    assert parsed["criteria"]["K1_gearing"]["passed"] is True
 
 
 def test_screen_one_company_known_fail():
     raw = screen_one_company.invoke({"data_dir": str(DATA), "ticker": "ORKES-B"})
     parsed = json.loads(raw)
-    assert parsed["status"] == "GAGAL"
+    assert parsed["status"] == "FAIL"
 
 
 def test_screen_one_company_not_found():
@@ -57,6 +57,15 @@ def test_write_and_read_report():
     assert "Hello" in content
     # Cleanup
     (OUT / "test_report.md").unlink(missing_ok=True)
+
+
+def test_read_report_tolerates_output_prefix():
+    """Passing an 'output/'-prefixed path must resolve to output/X, not output/output/X."""
+    OUT.mkdir(exist_ok=True)
+    write_report.invoke({"path": "prefix_test.md", "content": "# X\nWorld"})
+    content = read_report.invoke({"path": "output/prefix_test.md"})
+    assert "World" in content
+    (OUT / "prefix_test.md").unlink(missing_ok=True)
 
 
 def test_all_tools_in_registry():

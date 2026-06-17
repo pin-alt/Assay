@@ -67,20 +67,20 @@ def _demo() -> None:
     print(f"\n{'TICKER':10} {'STATUS':15} DETAILS")
     print("-" * 70)
     for ticker, r in sorted(results.items()):
-        if r["status"] == "TIDAK LENGKAP":
-            detail = "missing: " + ", ".join(r["medan_hilang"])
+        if r["status"] == "INCOMPLETE":
+            detail = "missing: " + ", ".join(r["missing_fields"])
         else:
-            detail = "; ".join(r["sebab"])
+            detail = "; ".join(r["reasons"])
         print(f"{ticker:10} {r['status']:15} {detail}")
 
     print("-" * 70)
 
     # Counts
-    counts = {"LULUS": 0, "GAGAL": 0, "TIDAK LENGKAP": 0}
+    counts = {"PASS": 0, "FAIL": 0, "INCOMPLETE": 0}
     for r in results.values():
         counts[r["status"]] += 1
 
-    print(f"LULUS: {counts['LULUS']}  |  GAGAL: {counts['GAGAL']}  |  TIDAK LENGKAP: {counts['TIDAK LENGKAP']}")
+    print(f"PASS: {counts['PASS']}  |  FAIL: {counts['FAIL']}  |  INCOMPLETE: {counts['INCOMPLETE']}")
     print("\nTheory: every ratio above was computed by Python stdlib, not an LLM.")
     print("For the full multi-agent experience: register agents at app.band.ai/agents,")
     print("fill in agent_config.yaml, and run 'uv run python -m armada.runner --all'.")

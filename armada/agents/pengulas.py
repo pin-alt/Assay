@@ -1,8 +1,8 @@
 """Pengulas — the cross-auditor.
 
 Runs as a standalone Band agent. When @mentioned by Konduktor, it re-runs the
-deterministic engine to verify every number in a report. Reports AUDIT: LULUS
-or AUDIT: GAGAL with specific discrepancies.
+deterministic engine to verify every number in a report. Reports AUDIT: PASS
+or AUDIT: FAIL with specific discrepancies.
 """
 
 from __future__ import annotations

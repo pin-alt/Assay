@@ -1,23 +1,23 @@
 {
-  "nama": "Tenaga Hijau Berhad",
+  "name": "Green Energy Berhad",
   "ticker": "ORKES-D",
-  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia. Fail ini SENGAJA tidak lengkap untuk latihan refusal.",
-  "papan": "ACE",
-  "harga_semasa": 0.55,
-  "bil_saham_juta": 650,
-  "kewangan": {
+  "note": "SYNTHETIC DATA. Created for class training only. Not a real company on Bursa Malaysia. This file is INTENTIONALLY incomplete for refusal practice.",
+  "board": "ACE",
+  "current_price": 0.55,
+  "shares_mil": 650,
+  "financials": {
     "FY2024": {
-      "hasil_juta": 88.0,
-      "untung_bersih_juta": 9.2,
-      "aliran_tunai_operasi_juta": 8.1,
-      "jumlah_hutang_juta": 35.0,
-      "ekuiti_juta": 95.0
+      "revenue_mil": 88.0,
+      "net_profit_mil": 9.2,
+      "operating_cashflow_mil": 8.1,
+      "total_debt_mil": 35.0,
+      "equity_mil": 95.0
     },
     "FY2025": {
-      "hasil_juta": 102.0,
-      "untung_bersih_juta": 11.5,
-      "jumlah_hutang_juta": 38.0,
-      "ekuiti_juta": 108.0
+      "revenue_mil": 102.0,
+      "net_profit_mil": 11.5,
+      "total_debt_mil": 38.0,
+      "equity_mil": 108.0
     }
   }
 }

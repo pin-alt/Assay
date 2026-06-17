@@ -1,18 +1,18 @@
 {
-  "nama": "Makanan Segera Berhad",
+  "name": "QuickFoods Berhad",
   "ticker": "ORKES-F",
-  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia. Fail ini SENGAJA tidak lengkap untuk latihan refusal.",
-  "papan": "Utama",
-  "sektor": "Pemprosesan makanan",
-  "harga_semasa": 1.05,
-  "bil_saham_juta": 750,
-  "kewangan": {
+  "note": "SYNTHETIC DATA. Created for class training only. Not a real company on Bursa Malaysia. This file is INTENTIONALLY incomplete for refusal practice.",
+  "board": "Main",
+  "sector": "Food processing",
+  "current_price": 1.05,
+  "shares_mil": 750,
+  "financials": {
     "FY2025": {
-      "hasil_juta": 410.0,
-      "untung_bersih_juta": 28.7,
-      "aliran_tunai_operasi_juta": 31.0,
-      "jumlah_hutang_juta": 120.0,
-      "ekuiti_juta": 310.0
+      "revenue_mil": 410.0,
+      "net_profit_mil": 28.7,
+      "operating_cashflow_mil": 31.0,
+      "total_debt_mil": 120.0,
+      "equity_mil": 310.0
     }
   }
 }

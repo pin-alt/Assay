@@ -1,25 +1,25 @@
 {
-  "nama": "Peruncitan Jaya Berhad",
+  "name": "Bright Retail Berhad",
   "ticker": "ORKES-C",
-  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
-  "papan": "Utama",
-  "sektor": "Peruncitan barangan pengguna",
-  "harga_semasa": 0.30,
-  "bil_saham_juta": 900,
-  "kewangan": {
+  "note": "SYNTHETIC DATA. Created for class training only. Not a real company on Bursa Malaysia.",
+  "board": "Main",
+  "sector": "Consumer goods retail",
+  "current_price": 0.30,
+  "shares_mil": 900,
+  "financials": {
     "FY2024": {
-      "hasil_juta": 500.0,
-      "untung_bersih_juta": 6.0,
-      "aliran_tunai_operasi_juta": 9.0,
-      "jumlah_hutang_juta": 60.0,
-      "ekuiti_juta": 210.0
+      "revenue_mil": 500.0,
+      "net_profit_mil": 6.0,
+      "operating_cashflow_mil": 9.0,
+      "total_debt_mil": 60.0,
+      "equity_mil": 210.0
     },
     "FY2025": {
-      "hasil_juta": 520.0,
-      "untung_bersih_juta": 7.8,
-      "aliran_tunai_operasi_juta": 10.4,
-      "jumlah_hutang_juta": 58.0,
-      "ekuiti_juta": 218.0
+      "revenue_mil": 520.0,
+      "net_profit_mil": 7.8,
+      "operating_cashflow_mil": 10.4,
+      "total_debt_mil": 58.0,
+      "equity_mil": 218.0
     }
   }
 }

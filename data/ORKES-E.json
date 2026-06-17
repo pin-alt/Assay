@@ -1,25 +1,25 @@
 {
-  "nama": "Penjagaan Sejahtera Berhad",
+  "name": "Wellcare Health Berhad",
   "ticker": "ORKES-E",
-  "nota": "DATA SINTETIK. Dicipta untuk latihan kelas sahaja. Bukan syarikat sebenar di Bursa Malaysia.",
-  "papan": "Utama",
-  "sektor": "Penjagaan kesihatan",
-  "harga_semasa": 2.40,
-  "bil_saham_juta": 400,
-  "kewangan": {
+  "note": "SYNTHETIC DATA. Created for class training only. Not a real company on Bursa Malaysia.",
+  "board": "Main",
+  "sector": "Healthcare",
+  "current_price": 2.40,
+  "shares_mil": 400,
+  "financials": {
     "FY2024": {
-      "hasil_juta": 180.0,
-      "untung_bersih_juta": 21.6,
-      "aliran_tunai_operasi_juta": 25.0,
-      "jumlah_hutang_juta": 30.0,
-      "ekuiti_juta": 240.0
+      "revenue_mil": 180.0,
+      "net_profit_mil": 21.6,
+      "operating_cashflow_mil": 25.0,
+      "total_debt_mil": 30.0,
+      "equity_mil": 240.0
     },
     "FY2025": {
-      "hasil_juta": 198.0,
-      "untung_bersih_juta": 25.7,
-      "aliran_tunai_operasi_juta": 28.4,
-      "jumlah_hutang_juta": 28.0,
-      "ekuiti_juta": 262.0
+      "revenue_mil": 198.0,
+      "net_profit_mil": 25.7,
+      "operating_cashflow_mil": 28.4,
+      "total_debt_mil": 28.0,
+      "equity_mil": 262.0
     }
   }
 }

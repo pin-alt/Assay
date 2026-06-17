@@ -1,7 +1,7 @@
 """Deterministic screening engine — the ONLY source of financial ratios and status.
 
-Ported verbatim from the AVL workshop's tools/jalankan_saringan.py. Pure Python
-stdlib, no LLM, no network. Same inputs always produce the same outputs.
+Ported from the AVL workshop's screening tool. Pure Python stdlib, no LLM, no
+network. Same inputs always produce the same outputs.
 
 Doctrine: numbers come from here, never from an agent's reasoning. Agents call
 these functions and report what the code computed; they never compute a ratio.
@@ -12,82 +12,82 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-MEDAN_SYARIKAT = ["nama", "ticker", "nota", "papan", "sektor", "harga_semasa",
-                  "bil_saham_juta", "kewangan"]
-MEDAN_TAHUN = ["hasil_juta", "untung_bersih_juta", "aliran_tunai_operasi_juta",
-               "jumlah_hutang_juta", "ekuiti_juta"]
+COMPANY_FIELDS = ["name", "ticker", "note", "board", "sector", "current_price",
+                  "shares_mil", "financials"]
+YEAR_FIELDS = ["revenue_mil", "net_profit_mil", "operating_cashflow_mil",
+               "total_debt_mil", "equity_mil"]
 
 
 def _check_fields(data: dict) -> list[str]:
     """Return list of missing fields. Empty list = data complete."""
-    hilang = [m for m in MEDAN_SYARIKAT if m not in data]
-    kewangan = data.get("kewangan", {})
-    if "kewangan" not in hilang and len(kewangan) < 2:
-        hilang.append("kewangan (perlu sekurang-kurangnya 2 tahun kewangan)")
-    for tahun, baris in sorted(kewangan.items()):
-        for m in MEDAN_TAHUN:
-            if m not in baris:
-                hilang.append(f"{tahun}.{m}")
-    return hilang
+    missing = [f for f in COMPANY_FIELDS if f not in data]
+    financials = data.get("financials", {})
+    if "financials" not in missing and len(financials) < 2:
+        missing.append("financials (requires at least 2 years of financials)")
+    for year, row in sorted(financials.items()):
+        for f in YEAR_FIELDS:
+            if f not in row:
+                missing.append(f"{year}.{f}")
+    return missing
 
 
-def _compute_ratios(baris: dict) -> dict:
+def _compute_ratios(row: dict) -> dict:
     """Compute ratios for one financial year. Input must be pre-validated present."""
-    untung = baris["untung_bersih_juta"]
-    ekuiti = baris["ekuiti_juta"]
+    profit = row["net_profit_mil"]
+    equity = row["equity_mil"]
     return {
-        "gearing": round(baris["jumlah_hutang_juta"] / ekuiti, 2),
-        "margin_bersih_pct": round(100.0 * untung / baris["hasil_juta"], 1),
-        "roe_pct": round(100.0 * untung / ekuiti, 1),
-        "untung_bersih_juta": untung,
-        "aliran_tunai_operasi_juta": baris["aliran_tunai_operasi_juta"],
+        "gearing": round(row["total_debt_mil"] / equity, 2),
+        "net_margin_pct": round(100.0 * profit / row["revenue_mil"], 1),
+        "roe_pct": round(100.0 * profit / equity, 1),
+        "net_profit_mil": profit,
+        "operating_cashflow_mil": row["operating_cashflow_mil"],
     }
 
 
 def screen_one(data: dict) -> dict:
-    """Screen one company: LULUS / GAGAL / TIDAK LENGKAP, with evidence."""
-    hilang = _check_fields(data)
-    if hilang:
+    """Screen one company: PASS / FAIL / INCOMPLETE, with evidence."""
+    missing = _check_fields(data)
+    if missing:
         # Refusal-first: incomplete data gets NO ratios — only the missing-field list.
         return {
-            "nama": data.get("nama", "(tiada nama)"),
-            "status": "TIDAK LENGKAP",
-            "medan_hilang": hilang,
-            "sebab": ["data tidak lengkap, saringan dihentikan"],
-            "nisbah": {},
-            "kriteria": {},
+            "name": data.get("name", "(no name)"),
+            "status": "INCOMPLETE",
+            "missing_fields": missing,
+            "reasons": ["incomplete data, screening halted"],
+            "ratios": {},
+            "criteria": {},
         }
 
-    tahun_semua = sorted(data["kewangan"])
-    terkini = tahun_semua[-1]
-    nisbah = {t: _compute_ratios(data["kewangan"][t]) for t in tahun_semua}
-    n = nisbah[terkini]
+    all_years = sorted(data["financials"])
+    latest = all_years[-1]
+    ratios = {y: _compute_ratios(data["financials"][y]) for y in all_years}
+    r = ratios[latest]
 
-    untung_semua_positif = all(nisbah[t]["untung_bersih_juta"] > 0 for t in tahun_semua)
-    kriteria = {
-        "K1_gearing": {"nilai": n["gearing"], "had": "< 1.0", "lulus": n["gearing"] < 1.0},
-        "K2_margin_bersih_pct": {"nilai": n["margin_bersih_pct"], "had": "> 5.0",
-                                  "lulus": n["margin_bersih_pct"] > 5.0},
-        "K3_roe_pct": {"nilai": n["roe_pct"], "had": "> 8.0", "lulus": n["roe_pct"] > 8.0},
-        "K4_untung_positif_semua_tahun": {
-            "nilai": {t: nisbah[t]["untung_bersih_juta"] for t in tahun_semua},
-            "had": "> 0 setiap tahun", "lulus": untung_semua_positif},
-        "K5_ocf_terkini_positif": {
-            "nilai": n["aliran_tunai_operasi_juta"], "had": "> 0",
-            "lulus": n["aliran_tunai_operasi_juta"] > 0},
+    profit_positive_all = all(ratios[y]["net_profit_mil"] > 0 for y in all_years)
+    criteria = {
+        "K1_gearing": {"value": r["gearing"], "limit": "< 1.0", "passed": r["gearing"] < 1.0},
+        "K2_net_margin_pct": {"value": r["net_margin_pct"], "limit": "> 5.0",
+                              "passed": r["net_margin_pct"] > 5.0},
+        "K3_roe_pct": {"value": r["roe_pct"], "limit": "> 8.0", "passed": r["roe_pct"] > 8.0},
+        "K4_profit_positive_all_years": {
+            "value": {y: ratios[y]["net_profit_mil"] for y in all_years},
+            "limit": "> 0 each year", "passed": profit_positive_all},
+        "K5_latest_ocf_positive": {
+            "value": r["operating_cashflow_mil"], "limit": "> 0",
+            "passed": r["operating_cashflow_mil"] > 0},
     }
 
-    gagal = [k for k, v in kriteria.items() if not v["lulus"]]
-    if gagal:
-        sebab = [f"{k}: nilai {kriteria[k]['nilai']} (had {kriteria[k]['had']})" for k in gagal]
-        status = "GAGAL"
+    failed = [k for k, v in criteria.items() if not v["passed"]]
+    if failed:
+        reasons = [f"{k}: value {criteria[k]['value']} (limit {criteria[k]['limit']})" for k in failed]
+        status = "FAIL"
     else:
-        sebab = ["semua 5 kriteria lulus"]
-        status = "LULUS"
+        reasons = ["all 5 criteria passed"]
+        status = "PASS"
 
     return {
-        "nama": data["nama"], "status": status, "medan_hilang": [], "sebab": sebab,
-        "tahun_terkini": terkini, "nisbah": nisbah, "kriteria": kriteria,
+        "name": data["name"], "status": status, "missing_fields": [], "reasons": reasons,
+        "latest_year": latest, "ratios": ratios, "criteria": criteria,
     }
 
 
@@ -108,10 +108,10 @@ def list_companies(data_dir: Path) -> list[dict]:
         d = json.loads(path.read_text(encoding="utf-8"))
         companies.append({
             "ticker": d.get("ticker", path.stem),
-            "nama": d.get("nama", ""),
-            "papan": d.get("papan", ""),
-            "sektor": d.get("sektor", ""),
-            "nota": d.get("nota", ""),
-            "fail": path.name,
+            "name": d.get("name", ""),
+            "board": d.get("board", ""),
+            "sector": d.get("sector", ""),
+            "note": d.get("note", ""),
+            "file": path.name,
         })
     return companies

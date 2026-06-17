@@ -4,10 +4,11 @@ These are the ONLY path through which agents touch financial numbers. Every tool
 delegates to the engine; no agent computes a ratio.
 
 Tool contract:
-- `run_screening(data_dir)` -> JSON string of {ticker: screen_one_result}
-- `discover_companies(data_dir)` -> JSON string of [{ticker, nama, papan, sektor, nota, fail}]
-- `read_report(report_path)` -> str (file contents)
-- `write_report(report_path, content)` -> str (confirmation)
+- run_screening(data_dir)              -> JSON string of {ticker: screen_one result}
+- screen_one_company(data_dir, ticker) -> JSON string of one screen result
+- discover_companies(data_dir)         -> JSON string of [{ticker, name, board, sector, note, file}]
+- read_report(path)                    -> str (file contents)
+- write_report(path, content)          -> str (confirmation)
 """
 
 from __future__ import annotations
@@ -20,11 +21,25 @@ from langchain_core.tools import tool
 from .engine import screen_all, screen_one, list_companies
 
 
+def _output_path(path: str) -> Path:
+    """Resolve a report path under output/, tolerating an 'output/' prefix.
+
+    Agents pass 'Report_X.md' sometimes and 'output/Report_X.md' other times
+    (the Konduktor prompt uses the prefixed form when handing off to Pengulas).
+    Both must resolve to output/Report_X.md — never output/output/Report_X.md,
+    which would cause a spurious 'report not found' / false AUDIT: FAIL.
+    """
+    p = Path(path)
+    if p.parts and p.parts[0] == "output" and len(p.parts) > 1:
+        p = Path(*p.parts[1:])
+    return Path("output") / p
+
+
 @tool
 def run_screening(data_dir: str) -> str:
     """Screen every company in data_dir/*.json.
 
-    Returns JSON: {ticker: {nama, status (LULUS/GAGAL/TIDAK LENGKAP), sebab, kriteria, nisbah, medan_hilang}}.
+    Returns JSON: {ticker: {name, status (PASS/FAIL/INCOMPLETE), reasons, criteria, ratios, missing_fields}}.
     This is the ONLY source of financial ratios and screening status. NEVER compute a ratio yourself.
     """
     results = screen_all(Path(data_dir))
@@ -35,7 +50,7 @@ def run_screening(data_dir: str) -> str:
 def screen_one_company(data_dir: str, ticker: str) -> str:
     """Screen ONE specific company by its ticker (e.g., ORKES-A).
 
-    Returns JSON with full screening result: {nama, status, sebab, kriteria, nisbah}.
+    Returns JSON with the full screening result: {name, status, reasons, criteria, ratios}.
     Use this when cross-auditing a specific report.
     """
     path = Path(data_dir) / f"{ticker}.json"
@@ -50,7 +65,7 @@ def screen_one_company(data_dir: str, ticker: str) -> str:
 def discover_companies(data_dir: str) -> str:
     """List all companies available for screening (no ratios computed).
 
-    Returns JSON array: [{ticker, nama, papan, sektor, nota, fail}].
+    Returns JSON array: [{ticker, name, board, sector, note, file}].
     """
     companies = list_companies(Path(data_dir))
     return json.dumps(companies, ensure_ascii=False, indent=2)
@@ -61,14 +76,13 @@ def write_report(path: str, content: str) -> str:
     """Write a report file. Call only with final, verified content.
 
     Args:
-        path: Path relative to output/ (e.g., 'Laporan_ORKES-A.md')
+        path: Filename under output/ (e.g., 'Report_ORKES-A.md')
         content: The complete markdown report text
     """
-    output_dir = Path("output")
-    output_dir.mkdir(exist_ok=True)
-    report_path = output_dir / path
+    Path("output").mkdir(exist_ok=True)
+    report_path = _output_path(path)
     report_path.write_text(content, encoding="utf-8")
-    return f"Report written to output/{path}"
+    return f"Report written to {report_path.as_posix()}"
 
 
 @tool
@@ -76,11 +90,11 @@ def read_report(path: str) -> str:
     """Read a previously written report file.
 
     Args:
-        path: Path relative to output/ (e.g., 'Laporan_ORKES-A.md')
+        path: Filename under output/ (e.g., 'Report_ORKES-A.md')
     """
-    report_path = Path("output") / path
+    report_path = _output_path(path)
     if not report_path.exists():
-        return f"Report not found: output/{path}"
+        return f"Report not found: {report_path.as_posix()}"
     return report_path.read_text(encoding="utf-8")
 
 

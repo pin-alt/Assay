@@ -23,20 +23,71 @@ _load_env = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(_load_env)
 
 
-def _build_llm() -> ChatOpenAI:
-    """Build the LLM from environment variables.
+def _build_llm() -> Any:
+    """Build the LLM from environment variables, selected by MODEL_PROVIDER.
 
-    Primary: GLM-5.2 via z.ai (GLM_API_KEY, GLM_MODEL, GLM_BASE_URL).
-    Fallback: set ANTHROPIC_API_KEY and change the model to claude via config.
+    MODEL_PROVIDER (default "glm") picks the brain. All but Claude are
+    OpenAI-compatible and share one ChatOpenAI factory:
+
+        glm         GLM-5.2 via z.ai          (free dev default)
+        aimlapi     AI/ML API gateway          (partner prize lane; route a
+                                                frontier tool-caller for the
+                                                recorded demo)
+        featherless Featherless serverless OSS (partner prize lane; Qwen3
+                                                family supports tool-calling)
+        claude      Anthropic direct           (break-glass max reliability;
+                                                needs `uv add langchain-anthropic`)
+
+    Flip one env var to swap brains mid-demo — no code edit.
     """
-    api_key = os.getenv("GLM_API_KEY")
-    model = os.getenv("GLM_MODEL", "glm-5.2")
-    base_url = os.getenv("GLM_BASE_URL", "https://open.bigmodel.cn/api/paas/v4/")
+    provider = os.getenv("MODEL_PROVIDER", "glm").strip().lower()
 
+    if provider == "claude":
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "MODEL_PROVIDER=claude but ANTHROPIC_API_KEY not set in .env."
+            )
+        try:
+            from langchain_anthropic import ChatAnthropic
+        except ImportError as exc:
+            raise RuntimeError(
+                "MODEL_PROVIDER=claude needs langchain-anthropic. "
+                "Run: uv add langchain-anthropic"
+            ) from exc
+        model = os.getenv("ANTHROPIC_MODEL", "claude-opus-4-8")
+        return ChatAnthropic(model=model, api_key=api_key, temperature=0.1)
+
+    # OpenAI-compatible providers: (key env var, base_url default, model default)
+    presets = {
+        "glm": (
+            "GLM_API_KEY",
+            os.getenv("GLM_BASE_URL", "https://api.z.ai/api/paas/v4/"),
+            os.getenv("GLM_MODEL", "glm-5.2"),
+        ),
+        "aimlapi": (
+            "AIMLAPI_API_KEY",
+            os.getenv("AIMLAPI_BASE_URL", "https://api.aimlapi.com/v1"),
+            os.getenv("AIMLAPI_MODEL", "gpt-4o"),
+        ),
+        "featherless": (
+            "FEATHERLESS_API_KEY",
+            os.getenv("FEATHERLESS_BASE_URL", "https://api.featherless.ai/v1"),
+            os.getenv("FEATHERLESS_MODEL", "Qwen/Qwen3-235B-A22B"),
+        ),
+    }
+    if provider not in presets:
+        raise RuntimeError(
+            f"Unknown MODEL_PROVIDER={provider!r}. "
+            "Use one of: glm | aimlapi | featherless | claude."
+        )
+
+    key_env, base_url, model = presets[provider]
+    api_key = os.getenv(key_env)
     if not api_key:
         raise RuntimeError(
-            "GLM_API_KEY not set. Create a .env file from .env.example "
-            "with your z.ai API key."
+            f"MODEL_PROVIDER={provider} but {key_env} not set. "
+            "Add it to .env (see .env.example)."
         )
 
     return ChatOpenAI(
