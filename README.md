@@ -7,7 +7,7 @@ A Band-native multi-agent system where three AI agents collaborate through
 a deterministic Python engine, and a separate agent cross-audits every report.
 
 **Hackathon:** Band of Agents (lablab.ai), June 12–19, 2026  
-**Status:** Engine + 14/14 tests ✅ | Band agents ready for live test
+**Status:** Engine + deterministic auditor + 24/24 tests ✅ | Band agents ready for live test
 
 ---
 
@@ -53,7 +53,7 @@ INCOMPLETE: 2.
 ### 2. Run tests
 
 ```bash
-uv run pytest -v                          # 14 tests, all pass
+uv run pytest -v                          # 24 tests, all pass
 ```
 
 ### 3. Launch on Band platform (needs registered agents)
@@ -100,7 +100,8 @@ orchestra play.
 ├── output/               # Reports land here
 └── tests/
     ├── test_engine.py    # 6 tests: all statuses match oracle
-    └── test_tools.py     # 8 tests: tool shapes + read/write cycle
+    ├── test_tools.py     # 8 tests: tool shapes + read/write cycle
+    └── test_audit.py     # 10 tests: tamper test, deterministic correctness audit
 ```
 
 ---
@@ -120,6 +121,27 @@ submission has agents that **architecturally refuse to compute:**
 | Zero hallucination surface | The LLM directs, explains, and audits — never calculates |
 
 ---
+
+## Correctness audit (the wedge)
+
+Most governed-agent systems audit whether the AI was *honest* about its number (does the
+claim cite evidence? was the transcript tampered?). Band Armada audits whether the number is
+*right*. Every report carries a machine-readable `armada-claims` block; the auditor re-runs
+the deterministic engine on the source data and diffs the claims in pure code. The verdict is
+not a model judgment, so it catches a report that is wrong even when it looks internally
+honest.
+
+```bash
+# Audit any report against a fresh engine recompute (no LLM, no Band needed)
+uv run python -m armada.audit output/Report_ORKES-A.md data ORKES-A
+# -> AUDIT: PASS   (clean report)
+# Doctor one ratio in the report, run it again:
+# -> AUDIT: FAIL   Details: gearing: report claims 0.01, engine computes 0.26
+```
+
+A SHA-256 hash proves nobody altered a report; it does not prove the report is right. We
+prove it by recomputing it. The tamper test (`tests/test_audit.py`) is this guarantee, green
+offline.
 
 ## The numbers
 
