@@ -1,4 +1,4 @@
-# Band Armada — Live Demo Runbook (your part, step by step)
+# Assay — Live Demo Runbook (your part, step by step)
 
 Goal: get the 3-agent desk running live on Band, catch a doctored report on camera, capture
 evidence, and submit before Jun 19, 11:00 AM EDT. Code is done; this is the manual part.
@@ -32,8 +32,7 @@ If this works, the engine + auditor are healthy and the only unknowns left are B
 won't run our engine/tools; our agents are remote Python processes that connect in). Use
 these names + descriptions:
 
-- **Skaut** — "Discovery agent. Surveys the company dataset and returns a candidate list with
-  a completeness pre-check. Never computes a ratio."
+- **Skaut** — "Discovery agent. Surveys the company dataset and returns a candidate list with a completeness pre-check. Never computes a ratio."
 - **Konduktor** — "Orchestrator and report writer. Runs the screening desk: recruits Skaut,
   runs the deterministic engine, writes reports, recruits Pengulas to audit each one."
 - **Pengulas** — "Cross-auditor. Re-runs the deterministic engine to verify every report and
@@ -46,6 +45,8 @@ For EACH agent, copy two things from its settings page:
 2. **API Key** (shown once — copy it immediately)
 
 You now have 6 values (3 agents × {id, key}).
+
+Skaut 
 
 ---
 
@@ -193,7 +194,7 @@ cp output/Report_*.md output/Rondaan_*.md ../2026-05-23-investment-advisor/hacka
 
 ## Phase 8 — Cover + deck (heaviest non-code gap)
 
-The diadvisor `brand/` assets are the WRONG product. Minimum viable: one band-armada cover
+The diadvisor `brand/` assets are the WRONG product. Minimum viable: one Assay cover
 image (16:9) + use this README / the live demo as the "deck". A full deck is optional if time
 is short — the video matters more.
 

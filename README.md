@@ -1,4 +1,4 @@
-# Band Armada — Multi-Agent Investment Screening Desk
+# Assay — Multi-Agent Investment Screening Desk
 
 **Nombor dari kod. AI mengarah, kod mengira, manusia memutuskan.**
 
@@ -125,7 +125,7 @@ submission has agents that **architecturally refuse to compute:**
 ## Correctness audit (the wedge)
 
 Most governed-agent systems audit whether the AI was *honest* about its number (does the
-claim cite evidence? was the transcript tampered?). Band Armada audits whether the number is
+claim cite evidence? was the transcript tampered?). Assay audits whether the number is
 *right*. Every report carries a machine-readable `armada-claims` block; the auditor re-runs
 the deterministic engine on the source data and diffs the claims in pure code. The verdict is
 not a model judgment, so it catches a report that is wrong even when it looks internally
@@ -142,6 +142,30 @@ uv run python -m armada.audit output/Report_ORKES-A.md data ORKES-A
 A SHA-256 hash proves nobody altered a report; it does not prove the report is right. We
 prove it by recomputing it. The tamper test (`tests/test_audit.py`) is this guarantee, green
 offline.
+
+## Portable correctness — model- and framework-agnostic
+
+The verdict is a pure function of the report text plus the source data, computed in
+`armada/audit.py` with **no model in the loop**. So correctness is independent of the brain:
+swap `MODEL_PROVIDER` across `glm` (z.ai / GLM-5.2), `featherless` (Qwen3-235B),
+`aimlapi` (AI/ML API / GPT-4o), or `claude` by one env var — no code edit — and the AUDIT
+verdict is byte-identical, because no model ever touches a number.
+
+| Brain (provider) | Drives the Band tool loop | AUDIT verdict (deterministic) |
+|---|---|---|
+| GLM-5.2 — z.ai | validated live 2026-06-18 | 4 PASS · 2 refused |
+| Qwen3-235B — Featherless | re-runnable, one env var | identical by construction |
+| GPT-4o — AI/ML API | re-runnable, one env var | identical by construction |
+
+Per-brain captures land in `hackathon/evidence/BRAINS.md`. The verdict column is identical
+*by construction*: `tests/test_audit.py` proves `audit_report()` is a pure function of report +
+data, so changing the brain cannot change it.
+
+The audit layer is **framework-agnostic** too: the `armada-claims` block is plain JSON and
+`audit_report()` is pure-Python with zero agent-framework deps. Any stack that emits the claims
+block — LangGraph here, but equally CrewAI, AutoGen, or raw OpenAI calls — can be audited by the
+same neutral recompute. The correctness control is portable across both the model and the
+framework: an enterprise governance buyer can swap either without re-validating the control.
 
 ## The numbers
 

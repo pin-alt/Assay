@@ -1,137 +1,373 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Band Armada — Deck</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assay · Certificate of Audit</title>
+
+<!-- Fonts: Spectral (serif, document-of-record voice) + JetBrains Mono (data/verdicts). Never system fonts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --bg:#0b1020; --panel:#121a32; --ink:#eaf0ff; --muted:#9fb0d8;
-    --accent:#3ddc97; --fail:#ff6b6b; --pass:#3ddc97; --line:#22304f; --chip:#1b2748;
-  }
-  *{box-sizing:border-box} html,body{margin:0;background:#05070f;color:var(--ink);
-    font-family:"Segoe UI",Inter,system-ui,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .slide{width:1280px;height:720px;margin:24px auto;background:
-    radial-gradient(1200px 600px at 80% -10%,#16224a 0%,var(--bg) 55%);
-    border:1px solid var(--line);border-radius:18px;padding:64px 72px;position:relative;overflow:hidden}
-  h1{font-size:60px;line-height:1.05;margin:0 0 18px}
-  h2{font-size:40px;margin:0 0 26px}
-  p,li{font-size:25px;line-height:1.45;color:var(--ink)}
-  .muted{color:var(--muted)}
-  .kicker{letter-spacing:.18em;text-transform:uppercase;font-size:16px;color:var(--accent);margin:0 0 22px}
-  .big{font-size:34px;line-height:1.35}
-  .accent{color:var(--accent)} .fail{color:var(--fail)} .pass{color:var(--pass)}
-  ul{margin:8px 0 0;padding-left:0;list-style:none}
-  li{margin:14px 0;padding-left:34px;position:relative}
-  li::before{content:"";position:absolute;left:0;top:13px;width:14px;height:14px;border-radius:50%;
-    background:var(--accent);box-shadow:0 0 0 4px rgba(61,220,151,.15)}
-  .chip{display:inline-block;background:var(--chip);border:1px solid var(--line);border-radius:999px;
-    padding:6px 16px;font-size:18px;color:var(--muted);margin:6px 8px 0 0}
-  .foot{position:absolute;bottom:30px;left:72px;right:72px;display:flex;justify-content:space-between;
-    font-size:16px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 26px}
-  .card h3{margin:0 0 8px;font-size:24px;color:var(--accent)}
-  .card p{font-size:21px;margin:0;color:var(--muted)}
-  .flow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;font-size:21px}
-  .node{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
-  .arrow{color:var(--accent);font-size:26px}
-  .mono{font-family:"Cascadia Code",Consolas,monospace}
-  .verdict{font-family:"Cascadia Code",Consolas,monospace;font-size:24px;background:#0a1126;
-    border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-top:14px;white-space:pre-wrap}
-  @media print{ body{background:#fff} .slide{margin:0;page-break-after:always;border-radius:0;border:none;
-    width:100%;height:100vh} @page{size:1280px 720px;margin:0} }
+/* ===========================================
+   THEME — certificate-light. Change here, change everything.
+   =========================================== */
+:root{
+  /* letterbox + paper */
+  --stage-bg: oklch(0.26 0.012 262);          /* deep ink-slate behind the sheet */
+  --paper:    oklch(0.987 0.002 255);
+  --slide-bg: var(--paper);
+  --inset:    oklch(0.966 0.004 255);
+  /* ink */
+  --ink:      oklch(0.235 0.012 262);
+  --ink-2:    oklch(0.408 0.013 262);
+  --rule:     oklch(0.872 0.006 262);
+  --rule-2:   oklch(0.760 0.008 262);
+  /* accents */
+  --brand:    oklch(0.430 0.130 264);
+  --pass:     oklch(0.455 0.110 150);
+  --fail:     oklch(0.470 0.175 27);
+  --pass-bg:  oklch(0.955 0.030 150);
+  --fail-bg:  oklch(0.962 0.035 27);
+  /* type (authored at 1920x1080 stage) */
+  --font-serif:"Spectral",Georgia,serif;
+  --font-mono:"JetBrains Mono",ui-monospace,monospace;
+  /* motion */
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --dur: 0.7s;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ===========================================
+   FIXED 16:9 STAGE — viewport-base.css (full, mandatory)
+   =========================================== */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;
+  transform-origin:0 0;background:var(--slide-bg,#fff)}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;
+  visibility:hidden;opacity:0;pointer-events:none;background:var(--slide-bg,#fff)}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+img,video,canvas,svg{max-width:100%;max-height:100%}
+.deck-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1000}
+@media print{
+  html,body{width:1920px;height:auto;overflow:visible;background:#fff}
+  .deck-viewport{position:static;overflow:visible;background:#fff}
+  .deck-stage{position:static;width:auto;height:auto;transform:none!important;background:none}
+  .slide{position:relative;display:block!important;visibility:visible!important;opacity:1!important;
+    pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .deck-controls,.edit-hotzone,.edit-toggle{display:none!important}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important}
+}
+
+/* ===========================================
+   SHEET — the certificate inside each slide
+   =========================================== */
+.slide{font-family:var(--font-serif);color:var(--ink)}
+.sheet{position:absolute;inset:0;padding:84px 112px 74px;display:flex;flex-direction:column}
+/* double keyline border = certificate */
+.slide::before{content:"";position:absolute;inset:30px;border:1px solid var(--rule);pointer-events:none;z-index:2}
+.slide::after{content:"";position:absolute;inset:38px;border:1px solid var(--rule);opacity:.5;pointer-events:none;z-index:2}
+
+/* header band (deliberate document-of-record system, not a per-slide eyebrow) */
+.head{display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:22px;border-bottom:1px solid var(--rule-2);z-index:3}
+.mark{font-weight:600;font-size:32px;letter-spacing:.02em}
+.mark b{color:var(--brand);font-weight:700}
+.doctype{font-family:var(--font-mono);font-size:17px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-2)}
+
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;z-index:3}
+
+h1{font-size:92px;line-height:1.03;font-weight:600;letter-spacing:-0.02em;text-wrap:balance;max-width:21ch}
+h2{font-size:62px;line-height:1.08;font-weight:600;letter-spacing:-0.015em;text-wrap:balance;margin-bottom:6px}
+.lede{font-size:38px;line-height:1.4;font-weight:400;max-width:30ch}
+.sub{font-size:31px;line-height:1.46;color:var(--ink-2);font-weight:400;max-width:48ch}
+.em{color:var(--brand);font-weight:600}
+.it{font-style:italic}
+.kv{font-family:var(--font-mono);font-size:19px;letter-spacing:.04em;color:var(--ink-2)}
+.stat{color:var(--brand);font-weight:600}
+
+.foot{display:flex;justify-content:space-between;align-items:center;
+  padding-top:20px;border-top:1px solid var(--rule-2);
+  font-family:var(--font-mono);font-size:16px;letter-spacing:.1em;color:var(--ink-2);z-index:3}
+.foot b{color:var(--brand)}
+
+/* chips — certificate seal row */
+.chips{display:flex;flex-wrap:wrap;gap:13px;margin-top:44px}
+.chip{font-family:var(--font-mono);font-size:18px;letter-spacing:.04em;color:var(--ink);
+  background:var(--inset);border:1px solid var(--rule-2);border-radius:3px;padding:11px 20px}
+
+/* two-column ledger compare */
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:40px;border:1px solid var(--rule-2)}
+.col{padding:36px 40px}
+.col+.col{border-left:1px solid var(--rule-2)}
+.col h3{margin-bottom:16px;font-family:var(--font-mono);font-size:17px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:500}
+.col p{font-size:28px;line-height:1.42}
+.col.win{background:var(--inset)}
+.col.win h3{color:var(--brand)}
+
+/* verdict blocks — instrument readout in the certificate */
+.verdict{font-family:var(--font-mono);border:1px solid var(--rule-2);border-radius:3px;
+  padding:24px 30px;margin-top:22px;font-size:25px;line-height:1.55;background:var(--inset);white-space:pre-wrap}
+.verdict.pass{background:var(--pass-bg);border-color:oklch(0.84 0.07 150)}
+.verdict.fail{background:var(--fail-bg);border-color:oklch(0.85 0.10 27)}
+.tag{font-weight:700;letter-spacing:.04em}
+.tag.pass{color:var(--pass)} .tag.fail{color:var(--fail)}
+
+/* flow row: Skaut -> Konduktor -> engine -> Pengulas */
+.flow{display:flex;margin-top:10px;border:1px solid var(--rule-2)}
+.node{flex:1;padding:26px 18px;text-align:center}
+.node+.node{border-left:1px solid var(--rule-2)}
+.node .n{font-size:30px;font-weight:600}
+.node .r{font-family:var(--font-mono);font-size:16px;letter-spacing:.06em;color:var(--ink-2);margin-top:6px;display:block}
+.node.code{background:var(--inset)}
+.node.code .n{color:var(--brand)}
+
+/* posture list */
+ul{list-style:none;margin-top:26px}
+li{font-size:31px;line-height:1.4;margin:20px 0;padding-left:40px;position:relative}
+li::before{content:"";position:absolute;left:0;top:14px;width:13px;height:13px;
+  border:2px solid var(--brand);border-radius:2px}
+.lab{font-family:var(--font-mono);font-size:19px;color:var(--ink-2);letter-spacing:.04em}
+
+/* buyer / horizontal cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:36px}
+.card{border:1px solid var(--rule-2);border-radius:3px;padding:32px 36px;background:var(--paper)}
+.card h3{margin-bottom:10px;font-size:31px;font-weight:600}
+.card p{font-size:25px;line-height:1.42;color:var(--ink-2)}
+
+/* ===========================================
+   ENTRANCE ANIMATION — calm fade + rise, staggered.
+   Triggered by .visible on the active slide.
+   =========================================== */
+.reveal{opacity:0;transform:translateY(34px);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.slide.visible .reveal{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.08s}.d2{transition-delay:.18s}.d3{transition-delay:.28s}
+.d4{transition-delay:.38s}.d5{transition-delay:.48s}.d6{transition-delay:.58s}
+
+/* ===========================================
+   CHROME — page counter + edit affordance (outside the stage)
+   =========================================== */
+.counter{font-family:var(--font-mono);font-size:14px;letter-spacing:.18em;color:oklch(0.82 0.01 262);
+  background:oklch(0.20 0.01 262 / .6);border:1px solid oklch(0.40 0.01 262);border-radius:999px;
+  padding:7px 16px;backdrop-filter:blur(4px)}
+.edit-hotzone{position:fixed;top:0;left:0;width:80px;height:80px;z-index:10000;cursor:pointer}
+.edit-toggle{position:fixed;top:18px;left:18px;z-index:10001;opacity:0;pointer-events:none;
+  transition:opacity .3s ease;background:oklch(0.20 0.01 262 / .7);color:#fff;border:1px solid oklch(0.45 0.01 262);
+  border-radius:8px;font-size:18px;padding:8px 12px;cursor:pointer}
+.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto}
+.edit-toggle.active{background:var(--brand);border-color:var(--brand)}
+body.editing .ed{outline:1px dashed var(--brand);outline-offset:4px;border-radius:2px}
+body.editing .ed:focus{outline:2px solid var(--brand);background:oklch(0.95 0.03 264)}
 </style>
 </head>
 <body>
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
 
-<section class="slide">
-  <p class="kicker">Band of Agents Hackathon · Track 3 · Regulated &amp; High-Stakes Workflows</p>
-  <h1>Band Armada</h1>
-  <p class="big">Agents that <span class="accent">refuse to invent numbers</span>.</p>
-  <p class="muted big">Numbers from code. AI directs, code computes, humans decide.</p>
-  <div style="margin-top:26px">
-    <span class="chip">Band-native</span><span class="chip">3 agents</span>
-    <span class="chip">deterministic engine</span><span class="chip">correctness audit</span>
-  </div>
-  <div class="foot"><span>Band Armada</span><span>Not investment advice · synthetic demo data</span></div>
-</section>
+    <!-- 1 · HERO -->
+    <section class="slide active">
+      <div class="sheet">
+        <header class="head reveal d1"><span class="mark"><b>ASSAY</b></span><span class="doctype">Certificate of Audit</span></header>
+        <div class="body">
+          <h1 class="reveal d2 ed">Agents that prove their numbers are <span class="em">right</span>.</h1>
+          <p class="lede reveal d3 ed" style="margin-top:28px">Numbers from code. A separate auditor re-runs the math, catching a report that is wrong <span class="it">even when it looks honest</span>.</p>
+          <p class="kv reveal d4" style="margin-top:24px">numbers from code · AI directs · code computes · humans decide</p>
+          <div class="chips reveal d5">
+            <span class="chip">Band-native</span><span class="chip">3 agents</span>
+            <span class="chip">deterministic engine</span><span class="chip">correctness audit</span>
+          </div>
+        </div>
+        <footer class="foot reveal d6"><span>Band of Agents · Track 3 · Regulated &amp; High-Stakes Workflows</span><span>Synthetic data · Not investment advice</span></footer>
+      </div>
+    </section>
 
-<section class="slide">
-  <p class="kicker">The problem</p>
-  <h2>Most agents happily invent a number</h2>
-  <p class="big">The smarter ones add an auditor that checks whether the AI was
-  <span class="muted">honest</span> about its number.</p>
-  <p class="big" style="margin-top:22px">That still passes a verdict that is
-  <span class="fail">wrong</span> as long as it looks honest. In a high-stakes financial
-  workflow that is a liability, not a quirk.</p>
-  <div class="foot"><span>Band Armada</span><span>02</span></div>
-</section>
+    <!-- 2 · THE WEDGE -->
+    <section class="slide">
+      <div class="sheet">
+        <header class="head reveal d1"><span class="mark"><b>ASSAY</b></span><span class="doctype">The wedge</span></header>
+        <div class="body">
+          <h2 class="reveal d2 ed">Everyone audits <span class="it">honesty</span>.<br>We prove <span class="em">correctness</span>.</h2>
+          <div class="cols reveal d3">
+            <div class="col"><h3>Everyone else</h3><p class="ed">Honesty checks and tamper-evident hashes. Proves nobody <em>altered</em> it.</p></div>
+            <div class="col win"><h3>Assay</h3><p class="ed">Re-runs the engine, diffs every figure. Proves it is <em>right</em>, not just honest.</p></div>
+          </div>
+          <p class="sub reveal d4 ed" style="margin-top:30px">A hash proves nobody altered it. <span class="em">Not</span> that it is right.</p>
+        </div>
+        <footer class="foot reveal d5"><span>Correctness &gt; honesty</span><span><b>ASSAY</b></span></footer>
+      </div>
+    </section>
 
-<section class="slide">
-  <p class="kicker">The wedge</p>
-  <h2>We compute the decision in <span class="accent">code</span></h2>
-  <p class="big">So our auditor re-runs the math and catches a verdict that is wrong
-  <span class="accent">even when the AI is perfectly honest</span>.</p>
-  <div class="grid">
-    <div class="card"><h3>Everyone else</h3><p>Honesty / citation / tamper-evident hash. Proves nobody altered the report.</p></div>
-    <div class="card"><h3>Band Armada</h3><p>Correctness audit. Re-computes the number and proves the report is right.</p></div>
-  </div>
-  <div class="foot"><span>A hash proves nobody altered it. It does not prove it is right.</span><span>03</span></div>
-</section>
+    <!-- 3 · LIVE PROOF -->
+    <section class="slide">
+      <div class="sheet">
+        <header class="head reveal d1"><span class="mark"><b>ASSAY</b></span><span class="doctype">Live on Band</span></header>
+        <div class="body">
+          <h2 class="reveal d2 ed">Three agents collaborate <span class="em">through Band</span></h2>
+          <div class="flow reveal d3">
+            <div class="node"><span class="n">Skaut</span><span class="r">scout · discovery</span></div>
+            <div class="node"><span class="n">Konduktor</span><span class="r">orchestrate · write</span></div>
+            <div class="node code"><span class="n">engine</span><span class="r">ratios · verdict</span></div>
+            <div class="node"><span class="n">Pengulas</span><span class="r">re-run · audit</span></div>
+          </div>
+          <div class="verdict pass reveal d4"><span class="tag pass">✓ AUDIT: PASS</span>   ORKES-A · B · C · E      <span class="kv">Checks 7 | Discrepancies 0</span></div>
+          <div class="verdict fail reveal d5"><span class="tag fail">✗ AUDIT: FAIL</span>   ORKES-A · Discrepancies 1
+Details: gearing: report claims <span class="tag fail">0.01</span>, engine computes <span class="tag pass">0.26</span></div>
+        </div>
+        <footer class="foot reveal d6"><span>Every @mention, tool_call &amp; tool_result in Band's trail · no model in the verdict</span><span><b>ASSAY</b></span></footer>
+      </div>
+    </section>
 
-<section class="slide">
-  <p class="kicker">Architecture</p>
-  <h2>Three agents collaborate <span class="accent">through Band</span></h2>
-  <div class="flow">
-    <span class="node">Skaut<br><span class="muted" style="font-size:16px">discovery</span></span>
-    <span class="arrow">→</span>
-    <span class="node">Konduktor<br><span class="muted" style="font-size:16px">orchestrate + write</span></span>
-    <span class="arrow">→</span>
-    <span class="node mono">engine<br><span class="muted" style="font-size:16px">ratios + verdict</span></span>
-    <span class="arrow">→</span>
-    <span class="node">Pengulas<br><span class="muted" style="font-size:16px">re-run + audit</span></span>
-  </div>
-  <ul style="margin-top:26px">
-    <li>No agent computes a ratio. The engine is the only source of numbers.</li>
-    <li>Every @mention, tool_call and tool_result is in Band's audit trail.</li>
-    <li>Incomplete data is refused: no number, no report.</li>
-  </ul>
-  <div class="foot"><span>Band Armada</span><span>04</span></div>
-</section>
+    <!-- 4 · PORTABILITY + POSTURE -->
+    <section class="slide">
+      <div class="sheet">
+        <header class="head reveal d1"><span class="mark"><b>ASSAY</b></span><span class="doctype">One control · any brain</span></header>
+        <div class="body">
+          <h2 class="reveal d2 ed">The verdict lives in <span class="em">code</span>, not the model</h2>
+          <p class="sub reveal d3 ed">No model touches a number, so the verdict is byte-identical across brains.</p>
+          <div class="verdict reveal d4"><span class="kv">MODEL_PROVIDER =</span> glm | claude | featherless | aimlapi   <span class="kv">· one env var, no code edit</span>
 
-<section class="slide">
-  <p class="kicker">The proof — live on Band</p>
-  <h2>Clean run, then the tamper catch</h2>
-  <p class="big">4 reports, audited by Pengulas re-running the engine:</p>
-  <div class="verdict"><span class="pass">AUDIT: PASS</span>  ORKES-A · ORKES-B · ORKES-C · ORKES-E   (Checks 7 | Discrepancies 0)</div>
-  <p class="big" style="margin-top:22px">Doctor one figure in a finished report:</p>
-  <div class="verdict"><span class="fail">AUDIT: FAIL</span>  Ticker: ORKES-A · Discrepancies: 1
-Details: gearing: report claims 0.01, engine computes 0.26</div>
-  <div class="foot"><span>Deterministic. No model in the verdict.</span><span>05</span></div>
-</section>
+GLM-5.2 (z.ai)     ✓ validated live · 4 PASS · 2 refused
+Claude (Opus 4.8)  ✓ validated live · 4 PASS · 2 refused
+Qwen3 · GPT-4o     same verdict by construction</div>
+          <ul class="reveal d5">
+            <li class="ed">Refused <span class="stat">2 of 6</span> as <span class="lab">INCOMPLETE</span>. No data, no number, no report.</li>
+            <li class="ed">Screens and audits only. Ends <span class="lab">AWAITING HUMAN SIGN-OFF</span>. Manusia memutuskan.</li>
+          </ul>
+        </div>
+        <footer class="foot reveal d6"><span>Swap the model without re-validating the control</span><span><b>ASSAY</b></span></footer>
+      </div>
+    </section>
 
-<section class="slide">
-  <p class="kicker">High-stakes posture</p>
-  <h2>Refusal-first &amp; human sign-off</h2>
-  <ul>
-    <li><span class="accent">Refused 2 of 6</span> companies (TIDAK LENGKAP) on incomplete data. Most desks would score them anyway.</li>
-    <li>The desk screens and audits only. It does not buy, sell, or act.</li>
-    <li>Every round ends <span class="mono">AWAITING HUMAN SIGN-OFF</span> — manusia memutuskan.</li>
-    <li>Brain is swappable by one env var. The decision does not live in the model.</li>
-  </ul>
-  <div class="foot"><span>Band Armada</span><span>06</span></div>
-</section>
+    <!-- 5 · WHY IT MATTERS / CLOSE -->
+    <section class="slide">
+      <div class="sheet">
+        <header class="head reveal d1"><span class="mark"><b>ASSAY</b></span><span class="doctype">Why it matters</span></header>
+        <div class="body">
+          <h2 class="reveal d2 ed">The <span class="it">wrong-but-honest</span> number is the expensive one</h2>
+          <p class="lede reveal d3 ed" style="max-width:52ch">A wrong-but-honest figure clears review. A restatement then costs about <span class="stat">9% of share price</span>.<span class="kv" style="white-space:nowrap">  (Palmrose 2004)</span></p>
+          <div class="grid2 reveal d4">
+            <div class="card"><h3>The buyer</h3><p class="ed">Compliance, risk and internal-audit desks. They sign off, and own the consequence.</p></div>
+            <div class="card"><h3>Horizontal</h3><p class="ed">Only the engine is domain-specific. Same control: underwriting, claims, ESG, tax.</p></div>
+          </div>
+          <p class="kv reveal d5" style="margin-top:30px">24 tests green · deterministic auditor · model-portable · synthetic demo data · not investment advice</p>
+        </div>
+        <footer class="foot reveal d6"><span><b>ASSAY</b> · agents that prove their numbers are right</span><span>manusia memutuskan</span></footer>
+      </div>
+    </section>
 
-<section class="slide">
-  <p class="kicker">Track 3 — review, traceability, careful decisions as the product</p>
-  <h1 style="font-size:48px">Agents that prove<br>their numbers are right.</h1>
-  <div style="margin-top:20px">
-    <span class="chip">Band · LangGraph</span><span class="chip">deterministic engine</span>
-    <span class="chip">24 tests green</span><span class="chip">model-portable</span>
-  </div>
-  <p class="muted big" style="margin-top:26px">Built zero-extra-cost on synthetic demo data. Not investment advice.</p>
-  <div class="foot"><span>Band Armada</span><span>07</span></div>
-</section>
+  </main>
+</div>
 
+<!-- chrome: page counter + edit affordance -->
+<div class="deck-controls"><span class="counter" id="counter">01 / 05</span></div>
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️ edit</button>
+
+<script>
+/* ===========================================
+   DECK CONTROLLER — fixed-stage scale + nav
+   =========================================== */
+class Deck{
+  constructor(){
+    this.slides=[...document.querySelectorAll('.slide')];
+    this.i=0;
+    this.stage=document.getElementById('deckStage');
+    this.counter=document.getElementById('counter');
+    this.scaleFn=this.scale.bind(this);
+    this.scale(); addEventListener('resize',this.scaleFn);
+    this.keys(); this.touch(); this.wheel();
+    this.show(0);
+  }
+  scale(){
+    const f=Math.min(innerWidth/1920,innerHeight/1080);
+    const x=(innerWidth-1920*f)/2, y=(innerHeight-1080*f)/2;
+    this.stage.style.transform=`translate(${x}px,${y}px) scale(${f})`;
+  }
+  show(n){
+    this.i=Math.max(0,Math.min(n,this.slides.length-1));
+    this.slides.forEach((s,k)=>{const on=k===this.i;s.classList.toggle('active',on);s.classList.toggle('visible',on);});
+    if(this.counter)this.counter.textContent=String(this.i+1).padStart(2,'0')+' / '+String(this.slides.length).padStart(2,'0');
+  }
+  next(){this.show(this.i+1)} prev(){this.show(this.i-1)}
+  keys(){
+    addEventListener('keydown',e=>{
+      if(document.activeElement&&document.activeElement.isContentEditable)return;
+      if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();this.next();}
+      else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();this.prev();}
+      else if(e.key==='Home'){this.show(0);}
+      else if(e.key==='End'){this.show(this.slides.length-1);}
+    });
+  }
+  touch(){
+    let x0=null;const v=document.querySelector('.deck-viewport');
+    v.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+    v.addEventListener('touchend',e=>{
+      if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;
+      if(Math.abs(dx)>45){dx<0?this.next():this.prev();}x0=null;
+    },{passive:true});
+  }
+  wheel(){
+    let lock=false;
+    addEventListener('wheel',e=>{
+      if(lock)return;
+      if(Math.abs(e.deltaY)<24&&Math.abs(e.deltaX)<24)return;
+      lock=true;setTimeout(()=>lock=false,680);
+      (e.deltaY>0||e.deltaX>0)?this.next():this.prev();
+    },{passive:true});
+  }
+}
+const deck=new Deck();
+
+/* ===========================================
+   INLINE EDITING — toggle (E / hotzone), autosave to localStorage, Ctrl+S exports HTML
+   =========================================== */
+const EDKEY='assay-deck-edits';
+const eds=[...document.querySelectorAll('.ed')];
+eds.forEach((el,k)=>el.dataset.ek=k);
+// restore saved edits
+try{const saved=JSON.parse(localStorage.getItem(EDKEY)||'{}');
+  eds.forEach(el=>{const v=saved[el.dataset.ek];if(v!=null)el.innerHTML=v;});}catch(_){}
+let saveT=null;
+function persist(){const o={};eds.forEach(el=>o[el.dataset.ek]=el.innerHTML);localStorage.setItem(EDKEY,JSON.stringify(o));}
+const editor={
+  isActive:false,
+  toggle(){
+    this.isActive=!this.isActive;
+    eds.forEach(el=>el.contentEditable=this.isActive);
+    document.body.classList.toggle('editing',this.isActive);
+    document.getElementById('editToggle').classList.toggle('active',this.isActive);
+  }
+};
+eds.forEach(el=>el.addEventListener('input',()=>{clearTimeout(saveT);saveT=setTimeout(persist,400);}));
+// toggle button
+const editToggle=document.getElementById('editToggle');
+editToggle.addEventListener('click',()=>editor.toggle());
+// hotzone hover with 400ms grace
+const hotzone=document.querySelector('.edit-hotzone');let hideT=null;
+hotzone.addEventListener('mouseenter',()=>{clearTimeout(hideT);editToggle.classList.add('show');});
+hotzone.addEventListener('mouseleave',()=>{hideT=setTimeout(()=>{if(!editor.isActive)editToggle.classList.remove('show');},400);});
+editToggle.addEventListener('mouseenter',()=>clearTimeout(hideT));
+editToggle.addEventListener('mouseleave',()=>{hideT=setTimeout(()=>{if(!editor.isActive)editToggle.classList.remove('show');},400);});
+hotzone.addEventListener('click',()=>editor.toggle());
+// keyboard: E toggles edit, Ctrl+S exports
+addEventListener('keydown',e=>{
+  if((e.key==='e'||e.key==='E')&&!(document.activeElement&&document.activeElement.isContentEditable)){editor.toggle();}
+  if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')){
+    e.preventDefault();persist();
+    const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='deck.html';a.click();
+  }
+});
+</script>
 </body>
 </html>

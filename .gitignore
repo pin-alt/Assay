@@ -6,3 +6,9 @@ output/*.md
 __pycache__/
 *.pyc
 .pytest_cache/
+.gstack/
+.claude/
+.codex/
+.firecrawl/
+.obsidian/
+.qa-deck/

@@ -1,4 +1,4 @@
-"""Band Armada — launch one or all screening agents.
+"""Assay — launch one or all screening agents.
 
 Usage:
     # Launch all three agents (requires 3 terminals or background)

@@ -1,1 +1,1 @@
-"""Band Armada — multi-agent investment screening desk on Band."""
+"""Assay — multi-agent investment screening desk on Band."""

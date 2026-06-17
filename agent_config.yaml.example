@@ -3,9 +3,12 @@
 skaut:
   agent_id: ""
   api_key: ""
+  handle: 
 konduktor:
   agent_id: ""
   api_key: ""
+  handle: 
 pengulas:
   agent_id: ""
   api_key: ""
+  handle: 

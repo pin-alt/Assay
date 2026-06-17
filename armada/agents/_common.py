@@ -57,7 +57,8 @@ def _build_llm() -> Any:
                 "Run: uv add langchain-anthropic"
             ) from exc
         model = os.getenv("ANTHROPIC_MODEL", "claude-opus-4-8")
-        return ChatAnthropic(model=model, api_key=api_key, temperature=0.1)
+        # Newer Claude models (opus-4-8+) reject `temperature` — omit it entirely.
+        return ChatAnthropic(model=model, api_key=api_key)
 
     # OpenAI-compatible providers: (key env var, base_url default, model default)
     presets = {

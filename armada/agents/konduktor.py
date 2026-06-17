@@ -16,7 +16,7 @@ from typing import Any
 from band import Agent
 
 from ..prompts import KONDUKTOR_PROMPT
-from ..tools import ALL_TOOLS
+from ..tools import run_screening, write_report, read_report
 from ._common import build_adapter, load_agent_config
 
 
@@ -27,7 +27,10 @@ async def run_konduktor(agent_id: str, api_key: str) -> None:
     """
     adapter = build_adapter(
         custom_section=KONDUKTOR_PROMPT,
-        additional_tools=ALL_TOOLS,
+        # Deliberately NO discover_companies: discovery belongs to @Skaut. Without it,
+        # Konduktor must @mention Skaut for the candidate list — making the 3-agent
+        # handoff real in Band's trail instead of Konduktor self-serving discovery.
+        additional_tools=[run_screening, write_report, read_report],
     )
 
     agent = Agent.create(
