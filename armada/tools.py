@@ -18,6 +18,7 @@ from pathlib import Path
 
 from langchain_core.tools import tool
 
+from .audit import audit_report as _audit_report, format_verdict
 from .engine import screen_all, screen_one, list_companies
 
 
@@ -98,5 +99,26 @@ def read_report(path: str) -> str:
     return report_path.read_text(encoding="utf-8")
 
 
+@tool
+def audit_report(report_path: str, data_dir: str) -> str:
+    """Deterministically audit a written report against a fresh engine recompute.
+
+    Re-runs the screening engine on the source data and diffs the report's ARMADA-CLAIMS
+    block (status + ratios) plus the mandatory disclaimers. Returns the canonical
+    AUDIT: PASS / AUDIT: FAIL block with exact discrepancies. The verdict is computed in
+    code, not judged by you: call this and report its output VERBATIM.
+
+    Args:
+        report_path: Filename under output/ (e.g., 'Report_ORKES-A.md')
+        data_dir: The data folder holding the source company JSON (e.g., 'data')
+    """
+    p = _output_path(report_path)
+    if not p.exists():
+        return f"AUDIT: FAIL\nreport not found: {p.as_posix()}"
+    result = _audit_report(p.read_text(encoding="utf-8"), data_dir)
+    return format_verdict(result)
+
+
 # Registry for the LangGraphAdapter additional_tools
-ALL_TOOLS = [run_screening, screen_one_company, discover_companies, write_report, read_report]
+ALL_TOOLS = [run_screening, screen_one_company, discover_companies, write_report,
+             read_report, audit_report]

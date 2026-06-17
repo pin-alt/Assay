@@ -70,7 +70,7 @@ def test_read_report_tolerates_output_prefix():
 
 def test_all_tools_in_registry():
     from armada.tools import ALL_TOOLS
-    assert len(ALL_TOOLS) == 5
+    assert len(ALL_TOOLS) == 6
     names = {t.name for t in ALL_TOOLS}
     assert names == {"run_screening", "screen_one_company", "discover_companies",
-                     "write_report", "read_report"}
+                     "write_report", "read_report", "audit_report"}

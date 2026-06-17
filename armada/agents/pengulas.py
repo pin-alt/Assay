@@ -13,7 +13,7 @@ from typing import Any
 from band import Agent
 
 from ..prompts import PENGULAS_PROMPT
-from ..tools import screen_one_company, run_screening, read_report
+from ..tools import screen_one_company, run_screening, read_report, audit_report
 from ._common import build_adapter, load_agent_config
 
 
@@ -24,7 +24,7 @@ async def run_pengulas(agent_id: str, api_key: str) -> None:
     """
     adapter = build_adapter(
         custom_section=PENGULAS_PROMPT,
-        additional_tools=[screen_one_company, run_screening, read_report],
+        additional_tools=[screen_one_company, run_screening, read_report, audit_report],
     )
 
     agent = Agent.create(
