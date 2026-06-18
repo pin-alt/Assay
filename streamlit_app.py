@@ -14,11 +14,13 @@ Runs the real `armada.audit` / `armada.engine` (pure stdlib, no LLM, no keys).
 from __future__ import annotations
 
 import glob
+import inspect
 import json
 import os
 
 import streamlit as st
 
+import armada.engine as engine_mod
 from armada.audit import CHECKED_RATIOS, audit_report, format_verdict
 from armada.engine import screen_one
 
@@ -124,6 +126,38 @@ ticker = st.selectbox("Pick a synthetic company", list(companies), format_func=l
 
 result = screen_one(companies[ticker])
 has_ratios = result["status"] in {"PASS", "FAIL"}
+
+# ── how the engine computes it (the formula, made visible) ──────────────────
+st.subheader("How the engine computes it")
+st.caption("No agent computes a ratio. The engine applies these fixed rules; the status is whatever the code returns.")
+
+if has_ratios:
+    crit_rows = []
+    for k, v in result["criteria"].items():
+        val = v["value"]
+        crit_rows.append({
+            "Criterion": k,
+            "Computed value": json.dumps(val) if isinstance(val, dict) else str(val),
+            "Threshold": v["limit"],
+            "Result": "PASS" if v["passed"] else "FAIL",
+        })
+    st.dataframe(crit_rows, width="stretch", hide_index=True)
+    st.markdown(
+        "Ratio definitions (pure arithmetic on the source financials):\n"
+        "- `gearing = total_debt / equity`\n"
+        "- `net_margin_pct = 100 × net_profit / revenue`\n"
+        "- `roe_pct = 100 × net_profit / equity`"
+    )
+else:
+    st.warning("Refusal-first: data is incomplete, so the engine returns INCOMPLETE and computes no ratios.", icon=":material/block:")
+    st.markdown("Missing fields the engine requires:")
+    for m in result.get("missing_fields", []):
+        st.markdown(f":red[•] `{m}`")
+
+with st.expander("The engine formula — armada/engine.py", icon=":material/function:"):
+    src = inspect.getsource(engine_mod._compute_ratios) + "\n\n" + inspect.getsource(engine_mod.screen_one)
+    st.code(src, language="python")
+    st.caption("This exact code computes the numbers below — and the auditor re-runs this same function from source.")
 
 # ── tamper control ──────────────────────────────────────────────────────────
 st.subheader("Tamper a figure")
