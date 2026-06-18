@@ -2,6 +2,10 @@
 
 **Nombor dari kod. AI mengarah, kod mengira, manusia memutuskan.**
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://althea.streamlit.app/)
+
+**Live demo:** the [Audit Bench](https://althea.streamlit.app/) lets you tamper a figure and watch the deterministic auditor flip the verdict to FAIL, with the engine formula shown in-app. The full three-agent Band run is in the demo video and RUNBOOK.md.
+
 A Band-native multi-agent system where three AI agents collaborate through
 @mention chat rooms to screen stocks — but every financial number comes from
 a deterministic Python engine, and a separate agent cross-audits every report.
