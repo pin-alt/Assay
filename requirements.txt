@@ -1,0 +1,3 @@
+# Streamlit Community Cloud deploy deps for the Audit Bench (streamlit_app.py).
+# The audited core (armada.audit / armada.engine) is pure stdlib — nothing else needed.
+streamlit>=1.57
