@@ -12,3 +12,8 @@ __pycache__/
 .firecrawl/
 .obsidian/
 .qa-deck/
+
+# media + demo traces (too big / not needed in repo)
+*.mp4
+output/*.json
+*.log
