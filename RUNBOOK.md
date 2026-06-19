@@ -95,14 +95,12 @@ Expect: three lines `[+] Starting skaut/konduktor/pengulas (agent_id=…)`, then
 
 [BROWSER] On app.band.ai confirm Skaut, Konduktor, Pengulas show as online/available.
 
-**If GLM misbehaves** (this is the one real risk):
-- `429 "insufficient balance"` → it's the billing path, not a dead key. In `.env` set
-  `GLM_BASE_URL=https://api.z.ai/api/coding/paas/v4/`, save, Ctrl+C the agents, re-run.
+**If the brain misbehaves** (this is the one real risk):
+- `429 "insufficient balance"` (GLM backup) → it's the billing path, not a dead key. In `.env`
+  set `GLM_BASE_URL=https://api.z.ai/api/coding/paas/v4/`, save, Ctrl+C the agents, re-run.
 - Agents loop / never finish / malformed tool calls → switch the brain (one line in `.env`):
-  - `MODEL_PROVIDER=aimlapi` + `AIMLAPI_API_KEY=<key>` (GPT-4o, no install), OR
-  - `MODEL_PROVIDER=claude` (most reliable) — first run once: `uv add langchain-anthropic`,
-    then set `ANTHROPIC_API_KEY=<key>`.
-  Ctrl+C, re-run `--all`. Do NOT spend hours tuning GLM prompts; swap and move on.
+  `MODEL_PROVIDER=claude` (primary, most reliable; `langchain-anthropic` is already installed)
+  or `MODEL_PROVIDER=glm`. Ctrl+C, re-run `--all`. Do NOT spend hours tuning prompts; swap and move on.
 
 Rule: whatever brain runs the full cycle cleanly in Phase 4 is the brain you RECORD on. Never
 change it between the run you validated and the run you record.
@@ -204,9 +202,6 @@ is short — the video matters more.
 
 [BROWSER] On lablab.ai, fill the form from `hackathon/band-of-agents-submission.md` (every
 field is pre-measured to fit). Track 3.
-- For the AI/ML API partner prize ($1k cash + $1k credits): you need "meaningful use" of
-  AI/ML API, not necessarily the recorded demo on it. If you want it, include an AIMLAPI run
-  in your evidence and say so.
 - Sleep-before-send: don't submit the same hour you finish the copy. Re-read once with fresh
   eyes, then submit.
 
@@ -217,7 +212,7 @@ field is pre-measured to fit). Track 3.
 | Symptom | Fix |
 |---|---|
 | `429 insufficient balance` (GLM) | `.env` GLM_BASE_URL → `https://api.z.ai/api/coding/paas/v4/` |
-| Agents loop / malformed tool calls | `.env` MODEL_PROVIDER=aimlapi (or claude + `uv add langchain-anthropic`) |
+| Agents loop / malformed tool calls | `.env` MODEL_PROVIDER=claude (langchain-anthropic already installed) |
 | "Internal error while processing message" in chat | an @mention didn't resolve — confirm all 3 agents are in the room with exact names |
 | No tool_call/tool_result in the trail | re-pull latest (emit gate fix is committed); confirm you're on the current code |
 | Report not found on audit | use the filename as written in output/ (with or without the `output/` prefix both work) |

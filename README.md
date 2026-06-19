@@ -11,7 +11,7 @@ A Band-native multi-agent system where three AI agents collaborate through
 a deterministic Python engine, and a separate agent cross-audits every report.
 
 **Hackathon:** Band of Agents (lablab.ai), June 12–19, 2026  
-**Status:** Engine + deterministic auditor + 24/24 tests ✅ | Band agents ready for live test
+**Status:** Engine + deterministic auditor + 24/24 tests ✅ | Band agents validated live on Claude + GLM-5.2 ✅
 
 ---
 
@@ -151,15 +151,15 @@ offline.
 
 The verdict is a pure function of the report text plus the source data, computed in
 `armada/audit.py` with **no model in the loop**. So correctness is independent of the brain:
-swap `MODEL_PROVIDER` across `glm` (z.ai / GLM-5.2), `featherless` (Qwen3-235B),
-`aimlapi` (AI/ML API / GPT-4o), or `claude` by one env var — no code edit — and the AUDIT
+swap `MODEL_PROVIDER` between `claude` (Anthropic) and `glm` (z.ai / GLM-5.2),
+or any OpenAI-compatible endpoint, by one env var (no code edit), and the AUDIT
 verdict is byte-identical, because no model ever touches a number.
 
 | Brain (provider) | Drives the Band tool loop | AUDIT verdict (deterministic) |
 |---|---|---|
-| GLM-5.2 — z.ai | validated live 2026-06-18 | 4 PASS · 2 refused |
-| Qwen3-235B — Featherless | re-runnable, one env var | identical by construction |
-| GPT-4o — AI/ML API | re-runnable, one env var | identical by construction |
+| Claude (Anthropic) | validated live through Band | 4 PASS · 2 refused |
+| GLM-5.2 (z.ai) | validated live through Band | 4 PASS · 2 refused |
+| Any OpenAI-compatible brain | swap by one env var | identical by construction |
 
 Per-brain captures land in `hackathon/evidence/BRAINS.md`. The verdict column is identical
 *by construction*: `tests/test_audit.py` proves `audit_report()` is a pure function of report +
@@ -186,10 +186,11 @@ ORKES-F  INCOMPLETE  Missing: financials (requires at least 2 years of financial
 
 ## Model
 
-Primary: **GLM-5.2** via z.ai OpenAI-compatible endpoint (zero new cost). The brain is
-swappable by one env var, `MODEL_PROVIDER`: `glm` (default) | `aimlapi` (GPT-4o) |
-`featherless` (Qwen3) | `claude`. No code edit. The OpenAI-compatible providers reuse the
-existing `langchain-openai`; the `claude` path needs `uv add langchain-anthropic`.
+Primary: **Claude** (Anthropic), validated live through Band. Backup: **GLM-5.2** via z.ai
+OpenAI-compatible endpoint (free), also validated live. Swap by one env var, `MODEL_PROVIDER`:
+`claude` (default) | `glm`. The verdict is identical across them by construction, and any
+other OpenAI-compatible brain swaps in the same way. No code edit. The `claude` path uses
+`langchain-anthropic`; the `glm` path reuses `langchain-openai`.
 
 ---
 

@@ -1,8 +1,8 @@
 """Shared LLM + LangGraphAdapter factory for all three Armada agents.
 
 Each agent gets its own adapter instance, so prompts and tools can differ.
-Primary: GLM-5.2 via z.ai OpenAI-compatible endpoint (zero cost, user's brain).
-Fallback: swap to Claude by setting ANTHROPIC_API_KEY and changing the model factory.
+Primary: Claude (Anthropic), the brain set in the real .env, validated live through Band.
+Backup: GLM-5.2 via z.ai OpenAI-compatible endpoint (free), also validated live.
 """
 
 from __future__ import annotations
@@ -27,21 +27,18 @@ load_dotenv(_load_env)
 def _build_llm() -> Any:
     """Build the LLM from environment variables, selected by MODEL_PROVIDER.
 
-    MODEL_PROVIDER (default "glm") picks the brain. All but Claude are
+    MODEL_PROVIDER (default "claude") picks the brain. All but Claude are
     OpenAI-compatible and share one ChatOpenAI factory:
 
-        glm         GLM-5.2 via z.ai          (free dev default)
-        aimlapi     AI/ML API gateway          (partner prize lane; route a
-                                                frontier tool-caller for the
-                                                recorded demo)
-        featherless Featherless serverless OSS (partner prize lane; Qwen3
-                                                family supports tool-calling)
-        claude      Anthropic direct           (break-glass max reliability;
-                                                needs `uv add langchain-anthropic`)
+        claude      Anthropic direct           (main brain; the real .env model,
+                                                validated live through Band)
+        glm         GLM-5.2 via z.ai          (backup; free, validated live)
+        aimlapi     AI/ML API gateway          (optional lane)
+        featherless Featherless serverless OSS (optional lane; Qwen3 tool-calling)
 
     Flip one env var to swap brains mid-demo — no code edit.
     """
-    provider = os.getenv("MODEL_PROVIDER", "glm").strip().lower()
+    provider = os.getenv("MODEL_PROVIDER", "claude").strip().lower()
 
     if provider == "claude":
         api_key = os.getenv("ANTHROPIC_API_KEY")
